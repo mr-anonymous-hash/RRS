@@ -1,9 +1,10 @@
 const router = require('express').Router();
+const hotel_controller = require('./../controllers/hotel_controller')
 
-router.get('/',()=>{[]})
-router.get('/:id',()=>{[]})
-router.post('/',()=>{[]})
-router.put('/:id',()=>{[]})
-router.delete('/:id',()=>{[]})
+router.get('/', hotel_controller.getAllHotels)
+router.get('/:id', hotel_controller.getHotelById)
+router.post('/', hotel_controller.createHotel)
+router.put('/:id', hotel_controller.updateHotel)
+router.delete('/:id', hotel_controller.deleteHotel)
 
 module.exports = router
