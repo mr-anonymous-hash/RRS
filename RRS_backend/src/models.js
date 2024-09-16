@@ -2,7 +2,7 @@ const sequelize = require('./database')
 const DataTypes = require('sequelize')
 
 const User = sequelize.define('users',{
-    user_id:{
+    id:{
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
@@ -31,19 +31,19 @@ const User = sequelize.define('users',{
 })
 
 const Admin = sequelize.define('admin',{
-    user_id:{
+    id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
         references:{
             model: User,
-            key: 'user_id'
+            key: 'id'
         }
 
     }
 })
 
 const Hotel = sequelize.define('hotel',{
-    hotel_id:{
+    id:{
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
@@ -107,7 +107,7 @@ const Hotel = sequelize.define('hotel',{
 })
 
 const Reservation = sequelize.define('reservations',{
-    reservation_id:{
+    id:{
         type:  DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -134,7 +134,7 @@ const Reservation = sequelize.define('reservations',{
 })
 
 const FoodItems = sequelize.define('fooditems',{
-    food_item_id:{
+    id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
