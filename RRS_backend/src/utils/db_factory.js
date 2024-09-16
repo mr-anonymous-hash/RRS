@@ -21,6 +21,7 @@ const getRecordById = async(model, id) =>{
 }
 
 const createRecord = async(model, data) =>{
+    console.log(data)
     try{
         const records = await model.create(data);
         return records 
@@ -30,10 +31,11 @@ const createRecord = async(model, data) =>{
     }
 }
 
-const updateRecord = async(model, data, id) => {
+const updateRecord = async(model, id, data,) => {
+    console.log(data)
     try{
         const records = await model.update(
-            {fields: data},
+                data,
             {where: {id: id}}
         );
         return records 
@@ -44,12 +46,13 @@ const updateRecord = async(model, data, id) => {
 }
 
 const deleteRecord = async(model, id) => {
+    
     try{
         const records = await model.destroy({where:{id: id}});
         return records 
     }
     catch(err){
-        console.log(`Error while Fetching Users: ${err}`)
+        console.log(`Error while deleting Users: ${err}`)
     }
 }
 
