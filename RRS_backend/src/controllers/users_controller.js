@@ -43,9 +43,11 @@ const createUser = async(req, res) => {
 }
 
 const updateUser = async(req, res) => {
+    const id = req.params.id
     const {name,email,phone,password,role} = req.body
-    
-    const user = await users_crud.updateUser({name,email,phone,password,role})
+    const data = {name,email,phone,password,role}
+    console.log(data)
+    const user = await users_crud.updateUser(id, data)
     if(user){
         res.status(200).send(user)
     }
@@ -55,14 +57,18 @@ const updateUser = async(req, res) => {
 }
 
 const deleteUser = async(req, res) => {
-    const {id} = req.params
-    
-    const user = await users_crud.updateUser(id)
-    if(user){
-        res.status(200).send(user)
+    const id = req.params.id
+    try{
+        const user = await users_crud.deleteUser(id)
+        if(user){
+            res.status(200).send('user delete successfully')
+        }
+        else{
+            res.status(400).send('Unable to delete user')
+        }
     }
-    else{
-        res.status(400).send('Unable to delete user')
+    catch(err){
+        console.log(`error while deleting :${err}`)
     }
 }
 
