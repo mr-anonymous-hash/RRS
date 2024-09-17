@@ -6,7 +6,7 @@ const getAllRecords = async(model) =>{
         return records 
     }
     catch(err){
-        console.log(`Error while Fetching Users: ${err}`)
+        console.log(`Error while Fetching Records: ${err}`)
     }
 }
 
@@ -16,7 +16,7 @@ const getRecordById = async(model, id) =>{
         return record 
     }
     catch(err){
-        console.log(`Error while Fetching Users: ${err}`)
+        console.log(`Error while Fetching Record: ${err}`)
     }
 }
 
@@ -27,7 +27,7 @@ const createRecord = async(model, data) =>{
         return records 
     }
     catch(err){
-        console.log(`Error while Fetching Users: ${err}`)
+        console.log(`Error while Creating Record: ${err}`)
     }
 }
 
@@ -41,7 +41,7 @@ const updateRecord = async(model, id, data,) => {
         return records 
     }
     catch(err){
-        console.log(`Error while Fetching Users: ${err}`)
+        console.log(`Error while Updating Record: ${err}`)
     }
 }
 
