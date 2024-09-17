@@ -1,4 +1,3 @@
-const { Admin } = require('../models');
 const admin_crud = require('./../crud/admin_crud');
 
 const getAllAdmin = async(req, res) => {
