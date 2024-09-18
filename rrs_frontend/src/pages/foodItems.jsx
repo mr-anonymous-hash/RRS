@@ -1,0 +1,115 @@
+import React from 'react'
+
+const foodItems = () => {
+  return (
+    <div>
+      <div>
+        <table border={1}>
+            <tbody>
+            <tr>
+                <th>Breakfast</th>
+                <th>Price</th>
+                <th><button>Add</button></th>
+            </tr>
+            <tr>
+                <td>item1</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item2</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item3</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item4</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+      <div>
+        <table border={1}>
+            <tbody>
+            <tr>
+                <th>Lunch</th>
+                <th>Price</th>
+                <th><button>Add</button></th>
+            </tr>
+            <tr>
+                <td>item1</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item2</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item3</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item4</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+      <div>
+        <table border={1}>
+            <tbody>
+            <tr>
+                <th>Dinner</th>
+                <th>Price</th>
+                <th><button>Add</button></th>
+            </tr>
+            <tr>
+                <td>item1</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item2</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item3</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            <tr>
+                <td>item4</td>
+                <td>10/-</td>
+                <td><button>edit</button></td>
+                <td><button>delete</button></td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+export default foodItems
