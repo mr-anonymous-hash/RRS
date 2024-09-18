@@ -1,5 +1,5 @@
 import React from 'react'
-import '@/app/globals.css'
+import './../app/globals.css'
 
 const tables = () => {
   return (

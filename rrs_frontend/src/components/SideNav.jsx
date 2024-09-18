@@ -2,7 +2,7 @@ import React from 'react'
 
 const SideNav = () => {
   return (
-    <div>
+    <div className='w-40 h-auto text-black ' >
         <div>Home</div>
         <div>Food Items</div>
         <div>Settings</div>
