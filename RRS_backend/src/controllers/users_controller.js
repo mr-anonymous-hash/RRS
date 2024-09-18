@@ -18,29 +18,29 @@ const getUserById = async(req, res) => {
     }
 }
 
-const createUser = async(req, res) => {
-    const {name,email,phone,password,role} = req.body
+// const createUser = async(req, res) => {
+//     const {name,email,phone,password,role} = req.body
     
-    if(!name) res.send('please enter name')
-    if(!email) res.send('please enter email')
-    if(!phone) res.send('please enter phone number')
-    if(!password) res.send('please enter password')
-    if(!role) res.send('please select your role')
+//     if(!name) res.send('please enter name')
+//     if(!email) res.send('please enter email')
+//     if(!phone) res.send('please enter phone number')
+//     if(!password) res.send('please enter password')
+//     if(!role) res.send('please select your role')
 
-    const hashPass = await bcrypt.hash(password,10)
-    const data = {name,email,phone,password: hashPass,role}
-    const user = await users_crud.createUser(data)
-    if(user){
-        const token = jwt.sign({id: user.id, email: user.email, role: user.role},
-            process.env.SECRET_KEY,
-            {expiresIn: '2h'}
-        ) 
-        res.status(201).send({user,token})
-    }
-    else{
-        res.status(400).send('Unable to create user')
-    }
-}
+//     const hashPass = await bcrypt.hash(password,10)
+//     const data = {name,email,phone,password: hashPass,role}
+//     const user = await users_crud.createUser(data)
+//     if(user){
+//         const token = jwt.sign({id: user.id, email: user.email, role: user.role},
+//             process.env.SECRET_KEY,
+//             {expiresIn: '2h'}
+//         ) 
+//         res.status(201).send({user,token})
+//     }
+//     else{
+//         res.status(400).send('Unable to create user')
+//     }
+// }
 
 const updateUser = async(req, res) => {
     const id = req.params.id
@@ -73,6 +73,6 @@ const deleteUser = async(req, res) => {
 }
 
 module.exports = {
-    getAllUsers,getUserById,createUser,
+    getAllUsers,getUserById,
     updateUser,deleteUser
 }
