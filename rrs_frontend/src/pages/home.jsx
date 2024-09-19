@@ -20,13 +20,13 @@ const Home = () => {
         const userObject = JSON.parse(user)
         setUserName(userObject.name)
         setRole(userObject.role)
-        if(!role == 'true'){
-          router.push('/users/home')
-        }
       }
       catch(error){
         console.error(`Error prasing user data:${error}`)
       }
+    }
+    if(!role === true ){
+      router.push('/users/home')
     }
 
   },[router])
