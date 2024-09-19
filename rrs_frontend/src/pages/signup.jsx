@@ -91,6 +91,7 @@ const Signup = () => {
                             className='h-10 rounded-md text-black px-2'
                             required
                         >
+                            <option >--select role--</option>
                             <option value="false">User</option>
                             <option value="true">Admin</option>
                         </select>
