@@ -10,12 +10,34 @@ const SideNav = () => {
   }
  
   return (
-    <div className='w-40 h-auto text-black ' >
-        <div><a onClick={()=>router.push('/home')} className='cursor-pointer'>Home</a></div>
-        <div><a onClick={()=>router.push('/foodItems')} className='cursor-pointer'>Food Items</a></div>
-        <div><a onClick={()=>router.push('/settings')} className='cursor-pointer'>Settings</a></div>
-        <div><a onClick={logout} className='cursor-pointer'>Logout</a></div>
+    <div className='w-40 h-auto min-h-[660px] bg-gray-800 text-white p-4 sticky top-0'>
+    <div className='flex flex-col space-y-2'>
+      <a 
+        onClick={() => router.push('/home')} 
+        className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200'
+      >
+        Home
+      </a>
+      <a 
+        onClick={() => router.push('/foodItems')} 
+        className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200'
+      >
+        Food Items
+      </a>
+      <a 
+        onClick={() => router.push('/settings')} 
+        className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200'
+      >
+        Settings
+      </a>
+      <a 
+        onClick={logout} 
+        className='cursor-pointer hover:bg-red-500 p-2 rounded transition duration-200'
+      >
+        Logout
+      </a>
     </div>
+  </div>
   )
 }
 
