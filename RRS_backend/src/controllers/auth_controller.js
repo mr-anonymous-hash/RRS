@@ -33,7 +33,7 @@ const login = async (req, res) => {
         res.status(401).send('Invalid email or Password');
     }else{
     const token = jwt.sign({id: user.id}, process.env.SECRET_KEY, {expiresIn: '2h'})
-    res.send({user:{name: user.name, email:user.email, role:user.role},token})
+    res.send({user:{name: user.name, user_id:user.id, role:user.role},token})
     }
 }
 
