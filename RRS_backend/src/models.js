@@ -1,164 +1,157 @@
 const sequelize = require('./database')
 const DataTypes = require('sequelize')
 
-const User = sequelize.define('users',{
-    id:{
+const User = sequelize.define('users', {
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    name:{
+    name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    email:{
+    email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
-    phone:{
-       type: DataTypes.BIGINT,
-       allowNull: true 
+    phone: {
+        type: DataTypes.STRING, 
+        allowNull: true
     },
-    password:{
+    password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    role:{
+    role: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: false
     }
 })
 
-const Admin = sequelize.define('admin',{
-    id:{
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references:{
-            model: User,
-            key: 'id'
-        }
-
-    }
-})
-
-const Hotel = sequelize.define('hotel',{
-    id:{
+const Hotel = sequelize.define('hotel', {
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    hotel_name:{
+    hotel_name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    location:{
+    location: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    hotel_discription:{
+    hotel_discription: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    hotel_category:{
+    hotel_category: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    cuisines:{
+    cuisines: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    total_tables:{
+    total_tables: { 
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    total_tables:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    total_tables:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    breakfast_items:{
+    breakfast_items: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    lunch_items:{
+    lunch_items: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    dinner_items:{
+    dinner_items: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    contact_number:{
-        type: DataTypes.INTEGER,
-        allowNull: true,
+    contact_number: { 
+        type: DataTypes.STRING,
+        allowNull: true
     },
-    opening_time:{
+    opening_time: {
         type: DataTypes.TIME,
         allowNull: false
     },
-    closing_time:{
+    closing_time: {
         type: DataTypes.TIME,
         allowNull: false
+    },
+    adminId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
     }
 })
 
-const Reservation = sequelize.define('reservations',{
-    id:{
-        type:  DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    no_of_guest:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    reserved_tables:{
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-      selected_food:{
-        type: DataTypes.STRING
-    },
-    reservation_time:{
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    status:{
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-})
-
-const FoodItems = sequelize.define('fooditems',{
-    id:{
+const Reservation = sequelize.define('reservations', {
+    id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    food_name:{
+    no_of_guest: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    reserved_tables: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    selected_food: {
+        type: DataTypes.STRING
+    },
+    reservation_time: {
+        type: DataTypes.TIME,
+        allowNull: false
+    },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+})
+
+const FoodItems = sequelize.define('fooditems', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    food_name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    type:{
+    type: {
         type: DataTypes.STRING
     },
-    cuisines:{
+    cuisines: {
         type: DataTypes.STRING
     },
-    price:{
+    price: {
         type: DataTypes.FLOAT,
         allowNull: false
     }
 })
 
-sequelize.sync().then(()=>{
+
+User.hasMany(Hotel, { foreignKey: 'adminId' });
+Hotel.belongsTo(User,{foreignKey: 'adminId'});
+
+
+sequelize.sync().then(() => {
     console.log('Database sync successfully')
-}).catch((error)=>{
+}).catch((error) => {
     console.log(`Database Connection Failed: ${error}`)
 })
 
-module.exports = {User,Admin,Hotel,Reservation,FoodItems}
+module.exports = { User, Hotel, Reservation, FoodItems }
