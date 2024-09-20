@@ -66,32 +66,22 @@ const Home = () => {
         <SideNav/>
       </div>
       <div>
-        <div className='bg-blue-400 h-48 min-w-[900px] mt-12 ml-40  rounded-md shadow-black '>
+        <div className='bg-blue-400 h-48 min-w-[900px] mt-12 ml-40 mr-40  rounded-md shadow-gray-300 shadow-lg '>
           <h1 className='font-extrabold text-2xl text-center py-20 '>
             Welcome, { username.toUpperCase() || 'Admin'}</h1>
           <p></p>
         </div>
-        <div className='mt-4 ml-24'>
+        <div className='mt-14 ml-24 mr-24'>
             {
               hotels.map((hotel)=>(
-                  <div key={hotel.id} 
+                  <div key={hotel.id} onClick={()=>router.push(`/admin/${hotel.id}`)} 
                   className='border p-4 rounded-md mb-4 bg-white text-black shadow'>
                       <h2 className='font-bold text-xl'>{hotel.hotel_name}</h2>
                       <p><strong>Location:</strong> {hotel.location}</p>
                       <p><strong>Description:</strong> {hotel.hotel_discription}</p>
-                      <p><strong>Category:</strong> {hotel.hotel_category}</p>
-                      <p><strong>Cuisines:</strong> {hotel.cuisines}</p>
-                      <p><strong>Total Tables:</strong> {hotel.total_tables}</p>
-                      <p><strong>Contact:</strong> {hotel.contact_number}</p>
-                      <p><strong>Opening Time:</strong> {hotel.opening_time}</p>
-                      <p><strong>Closing Time:</strong> {hotel.closing_time}</p>
                   </div>
               ))
             }
-        </div>
-        <div>
-          <button className='border  bg-slate-400 w-48 h-28 rounded-md'>Tables</button>
-          <button className='border  bg-slate-400 w-48 h-28 rounded-md'>Food Items</button>
         </div>
       </div>
     </div>
