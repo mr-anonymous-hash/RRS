@@ -69,6 +69,9 @@ const Login = () => {
                             />
                             <button type="submit" className='bg-blue-700 hover:bg-blue-600 rounded-md h-10 w-full text-white'>Login</button>
                         </form>
+                        <div>
+                            <p className='text-black'>don't have account ? <a href='/signup'>register now</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
