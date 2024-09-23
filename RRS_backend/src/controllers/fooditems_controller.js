@@ -16,9 +16,21 @@ const getFoodItemsById = async(req, res) =>{
     }
 }
 
+const getFoodItemsByHotelId = async(req, res) =>{
+    const {id} = req.params
+    console.log(id)
+    const foodItem = await fooditems_crud.getFoodItemsByHotelId(id)
+    if(foodItem){
+        res.status(200).send(foodItem)
+    }
+    else{
+        res.status(404).send('FoodItem not found')
+    }
+}
+
 const createFoodItem =  async(req, res) =>{
-    const {food_name, type, cuisines, price} = req.body
-    const data = {food_name, type, cuisines, price}
+    const {food_name, type, meal, cuisines, price, hotelId} = req.body
+    const data = {food_name, type, meal, cuisines, price, hotelId}
     const foodItem = await fooditems_crud.createFoodItem(data)
     if(foodItem){
         res.status(200).send(foodItem)
@@ -30,8 +42,8 @@ const createFoodItem =  async(req, res) =>{
 
 const updateFoodItem =  async(req, res) =>{
     const id = req.params.id
-    const {foodName, type, cuisines, price} = req.body
-    const data = {foodName, type, cuisines, price}
+    const {food_name, type, meal, cuisines, price, hotelId} = req.body
+    const data = {food_name, type, meal, cuisines, price, hotelId}
     const foodItem = await fooditems_crud.updateFoodItem(id, data)
     if(foodItem){
         res.status(200).send(foodItem)
@@ -53,6 +65,7 @@ const deleteFoodItem = async(req, res) => {
 }
 
 module.exports = {
-    getAllFoodItems,getFoodItemsById,createFoodItem,
+    getAllFoodItems,getFoodItemsById,
+    getFoodItemsByHotelId,createFoodItem,
     updateFoodItem,deleteFoodItem
 }
