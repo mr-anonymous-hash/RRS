@@ -12,7 +12,7 @@ const settings = () => {
       </div>
       <div>
         <div className='text-black text-center bg-slate-300 
-        ml-10 mt-10 rounded-lg min-h-60 min-w-60'
+        ml-10 mt-10 rounded-lg min-h-60 min-w-60 cursor-pointer hover:bg-slate-200'
         onClick={()=>router.push('/add_hotel')}>
           <p className='py-24'>Add Hotels</p>  
         </div>
