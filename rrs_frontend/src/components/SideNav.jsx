@@ -19,12 +19,6 @@ const SideNav = () => {
         Home
       </a>
       <a 
-        onClick={() => router.push('/foodItems')} 
-        className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200'
-      >
-        Food Items
-      </a>
-      <a 
         onClick={() => router.push('/settings')} 
         className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200'
       >
