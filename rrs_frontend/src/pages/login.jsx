@@ -3,11 +3,13 @@ import './../app/globals.css'
 import Head from 'next/head'
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Popup from '../components/Popup';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [popup, setPopup] = useState(false)
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -26,6 +28,7 @@ const Login = () => {
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('token', token);
                 setMessage('Login successful');
+                setPopup(true)
                 setTimeout(() => {
                     router.push('/home');
                 }, 1500);
@@ -33,6 +36,7 @@ const Login = () => {
         } catch (error) {
             console.error('Error', error);
             setMessage(error.response?.data?.message || 'Login failed. Please try again.');
+            setPopup(true)
         }
     }
 
@@ -41,14 +45,17 @@ const Login = () => {
             <Head>
                 <title>Login</title>
             </Head>
-            <div className='bg-gray-200 w-80 relative left-[600px] top-[200px] p-5 rounded-lg'>
-                <div className='flex flex-col gap-3 text-center'>
+            <div className=' flex w-full min-h-screen justify-center items-center '>
+                <div className='bg-gray-200 p-5 w-auto h-auto flex flex-col gap-3 
+                text-center rounded-lg '>
                     <div>
                         <h1 className='font-extrabold text-2xl text-black'>Login</h1>
                     </div>
-                    {message && <div className={`text-sm 
-                    ${message.includes('successful') ? 'text-green-600' : 'text-red-600'}`}>
-                    {message}</div>}
+                        <Popup
+                            title={message.includes('successful') ? 'Success' : 'Error'}
+                            message={message}
+                            isOpen={popup}
+                            autoCloseDuration={800}/>
                     <div>
                         <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
                             <input
@@ -67,10 +74,14 @@ const Login = () => {
                                 className='h-10 rounded-md px-2 text-black'
                                 required
                             />
-                            <button type="submit" className='bg-blue-700 hover:bg-blue-600 rounded-md h-10 w-full text-white'>Login</button>
+                            <button type="submit" className='bg-blue-700 hover:bg-blue-600
+                             rounded-md h-10 w-full text-white'>Login</button>
                         </form>
-                        <div>
-                            <p className='text-black'>don't have account ? <a href='/signup'>register now</a></p>
+                        <div className='pt-4'>
+                            <p className='text-black capitalize'>don't have account ? 
+                                <a href='/signup' className='text-blue-600 hover:underline'
+                                 > register now</a>
+                            </p>
                         </div>
                     </div>
                 </div>

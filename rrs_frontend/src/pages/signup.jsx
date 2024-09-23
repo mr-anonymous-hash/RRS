@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './../app/globals.css'
 import Head from 'next/head'
+import Popup from '../components/Popup'
 
 const Signup = () => {
     const [name, setName] = useState('')
@@ -9,6 +10,7 @@ const Signup = () => {
     const [password, setPassword] = useState('')
     const [role, setRole] = useState('')
     const [message, setMessage] = useState('')
+    const [popup, setPopup] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -25,7 +27,7 @@ const Signup = () => {
             
             if (res.ok) {
                 setMessage('Signup successful!')
-                // Clear form fields after successful signup
+                setPopup(true)
                 setName('')
                 setEmail('')
                 setPhone('')
@@ -34,11 +36,17 @@ const Signup = () => {
             } else {
                 const data = await res.json()
                 setMessage(data.message || 'Signup failed. Please try again.')
+                setPopup(true)
             }
         } catch (error) {
             console.error('Error', error)
             setMessage('An error occurred. Please try again later.')
+            setPopup(true)
         }
+    }
+
+    const handlePopup = () => {
+        setPopup(false)
     }
 
     return (
@@ -46,12 +54,12 @@ const Signup = () => {
             <Head>
                 <title>Sign Up</title>
             </Head>
-            <div className='bg-gray-200 w-80 relative top-[200px] left-[550px] rounded-md'>
-                <div className='flex flex-col gap-4 p-4 text-center'>
+            <div className='flex w-full min-h-screen justify-center items-center'>
+                <div className='bg-gray-200 flex flex-col gap-4 p-4 text-center rounded-lg'>
                     <div>
                         <h1 className='font-extrabold text-2xl text-black'>Sign Up</h1>
                     </div>
-                    {message && <div className={`text-sm ${message.includes('successful') ? 'text-green-600' : 'text-red-600'}`}>{message}</div>}
+                    {/* {message && <div className={`text-sm ${message.includes('successful') ? 'text-green-600' : 'text-red-600'}`}>{message}</div>} */}
                     <form onSubmit={handleSubmit} className='flex flex-col gap-2'>
                         <input 
                             type='text' 
@@ -100,10 +108,17 @@ const Signup = () => {
                         </button>
                     </form>
                     <div className='text-black'>
-                        <p>Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a></p>
+                        <p className='capitalize'>Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a></p>
                     </div>
                 </div>
             </div>
+            <Popup
+                title={message.includes('successful') ? 'Success' : 'Error'}
+                message={message}
+                isOpen={popup}
+                onClose={handlePopup}
+                autoCloseDuration={800}
+            />
         </>
     )
 }
