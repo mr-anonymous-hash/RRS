@@ -134,18 +134,31 @@ const FoodItems = sequelize.define('fooditems', {
     type: {
         type: DataTypes.STRING
     },
+    meal: {
+        type: DataTypes.STRING
+    },
     cuisines: {
         type: DataTypes.STRING
     },
     price: {
         type: DataTypes.FLOAT,
         allowNull: false
+    },
+    hotelId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'hotels',
+            key: 'id'
+        }
     }
 })
 
 
 User.hasMany(Hotel, { foreignKey: 'adminId' });
 Hotel.belongsTo(User,{foreignKey: 'adminId'});
+Hotel.hasMany(FoodItems, { foreignKey: 'hotelId' });
+FoodItems.belongsTo(Hotel, { foreignKey: 'hotelId' });
 
 
 sequelize.sync().then(() => {
