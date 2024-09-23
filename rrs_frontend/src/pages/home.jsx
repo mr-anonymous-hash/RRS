@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import './../app/globals.css'
 import SideNav from './../components/SideNav'
 import { useRouter } from 'next/router'
@@ -7,6 +7,7 @@ const Home = () => {
   const router = useRouter();
   const [username, setUserName] = useState('')
   const [hotels, setHotels] = useState([]);
+  const [loading, setLoading] = useState(true)
   
   useEffect(()=>{
     const token = localStorage.getItem('token')
@@ -16,6 +17,7 @@ const Home = () => {
     }
     if(user){
       try{
+        setLoading(true)
         const userObject = JSON.parse(user)
         setUserName(userObject.name)
         if(userObject.role === false){
@@ -24,6 +26,9 @@ const Home = () => {
       }
       catch(error){
         console.error(`Error prasing user data:${error}`)
+      }
+      finally{
+        setLoading(false)
       }
     }
 
@@ -73,15 +78,34 @@ const Home = () => {
         </div>
         <div className='mt-14 ml-24 mr-24'>
             {
-              hotels.map((hotel)=>(
+              loading ? (
+                <div class="flex items-center justify-center min-h-screen">
+                  <div class="flex items-center space-x-2">
+                  <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                    <div class="text-lg font-semibold">Loading...</div>
+                  </div>
+                </div>                
+              ) : hotels.length === 0 ? (
+                <div className='text-center p-8 bg-white rounded-md shadow'>
+                  <p className='text-xl mb-4 text-slate-400'>You need to add a hotel to get started.</p>
+                  <button 
+                    onClick={()=>router.push('/add_hotel')}
+                    className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors'
+                  >
+                    Add Hotel
+                  </button>
+                </div>
+              ) : (
+                hotels.map((hotel)=>(
                   <div key={hotel.id} onClick={()=>router.push(`/admin/${hotel.id}`)} 
-                  className='border p-4 rounded-md mb-4 bg-white text-black shadow'>
+                  className='border p-4 rounded-md mb-4 bg-white text-black cursor-pointer shadow hover:bg-slate-100'>
                       <h2 className='font-bold text-xl'>{hotel.hotel_name}</h2>
                       <p><strong>Location:</strong> {hotel.location}</p>
                       <p><strong>Description:</strong> {hotel.hotel_discription}</p>
                   </div>
-              ))
+            )))
             }
+            
         </div>
       </div>
     </div>
