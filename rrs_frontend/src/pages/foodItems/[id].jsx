@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './../../app/globals.css'
 import axios from 'axios';
 import { AiOutlineEdit } from "react-icons/ai";
-import { MdBackHand, MdOutlineAddBox, MdOutlineArrowBack, MdOutlineDeleteOutline } from "react-icons/md";
+import { MdBackHand, MdLocationPin, MdOutlineAddBox, MdOutlineArrowBack, MdOutlineDeleteOutline } from "react-icons/md";
 import { useRouter } from 'next/router';
 
 const FoodItems = () => {
   const [foodItems, setFoodItems] = useState([]);
+  const [hotel, setHotel] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -15,10 +16,32 @@ const FoodItems = () => {
     type: '',
     cuisines: '',
     price: '',
-    meal: 'Breakfast' // Default value
+    meal: 'Breakfast',
+    hotel_id: ''
   });
   const router = useRouter()
   const {id} = router.query
+
+  const fetchHotel = async (id) => {
+    const token = localStorage.getItem('token')
+    try {
+      const res = await fetch(`http://localhost:8000/api/hotels/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (!res.ok) {
+        throw new Error(`Failed to fetch hotel: ${res.status} ${res.statusText}`);
+      }
+      const data = await res.json();
+      setHotel(data)
+    } catch (error) {
+      console.error(`Error fetching hotel: ${error}`)
+      setError(`Error fetching hotel: ${error.message}`)
+    }
+  }
 
   const fetchFoodItems = async (id) => {
     try {
@@ -29,9 +52,10 @@ const FoodItems = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      setFoodItems(response.data);
+      setFoodItems(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       setError(err.message);
+      setFoodItems([]); // Set to empty array in case of error
     } finally {
       setLoading(false);
     }
@@ -53,7 +77,17 @@ const FoodItems = () => {
         }
       });
       setIsPopupOpen(false);
-      fetchFoodItems(); // Refresh the list
+      fetchFoodItems(id);
+      setFoodItems(
+        prev => ({
+          ...prev,
+          food_name:'',
+          type: '',
+          cuisines: '',
+          price: '',
+          meal: 'Breakfast'
+        })
+      )
     } catch (err) {
       setError(err.message);
     }
@@ -75,16 +109,22 @@ const FoodItems = () => {
     }
   }
 
-  const groupedFoodItems = foodItems.reduce((acc, item) => {
-    if (!acc[item.meal]) {
-      acc[item.meal] = [];
-    }
-    acc[item.meal].push(item);
-    return acc;
-  }, {});
+  const groupedFoodItems = Array.isArray(foodItems) 
+    ? foodItems.reduce((acc, item) => {
+        if (!acc[item.meal]) {
+          acc[item.meal] = [];
+        }
+        acc[item.meal].push(item);
+        return acc;
+      }, {})
+    : {};
 
   useEffect(() => {
-    if(id) fetchFoodItems(id);
+    if(id){
+      fetchHotel(id)
+      fetchFoodItems(id)
+      setFoodItems(prev => ({...prev, hotel_id:id}))
+    };
   }, [id]);
 
   const renderTable = (mealType) => {
@@ -92,7 +132,7 @@ const FoodItems = () => {
     return (
       <div className="mb-8">
         <div className='flex items-center justify-between'>
-          <h2 className="text-2xl font-bold mb-4 capitalize text-slate-400">{mealType}</h2>
+          <h2 className="text-xl font-bold mb-4 capitalize text-slate-800">{mealType}</h2>
           <button 
             onClick={() => {
               setNewFoodItem(prev => ({ ...prev, meal: mealType }));
@@ -104,7 +144,7 @@ const FoodItems = () => {
           </button>
         </div>
         <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-blue-400 text-white">
+          <thead className="bg-blue-500 text-white">
             <tr>
               <th className="py-2 px-4 text-left">Name</th>
               <th className="py-2 px-4 text-left">Type</th>
@@ -114,8 +154,9 @@ const FoodItems = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className="border-b hover:bg-gray-50">
+            {items.map((item,index) => (
+              <tr key={item.id} 
+              className={`border-b hover:bg-gray-300 ${index % 2 === 1 ? 'bg-slate-300 text-white' : ''}`}>
                 <td className="py-2 px-4 text-gray-600">{item.food_name}</td>
                 <td className="py-2 px-4 text-gray-600">{item.type}</td>
                 <td className="py-2 px-4 text-gray-600">{item.cuisines}</td>
@@ -153,7 +194,14 @@ const FoodItems = () => {
         onClick={()=>router.back()}
       />
       </span>
-      <h1 className="text-3xl font-bold mb-8 text-black">Food Items</h1>
+      <div className='flex flex-col items-center'>
+        <h1 className="text-3xl font-bold mb-1 text-slate-800">{hotel.hotel_name}</h1>
+        <p className='flex items-center text-slate-800'>
+        <MdLocationPin className="mr-1" /> {hotel.location}
+        </p>
+      </div>
+
+      <h2 className="text-2xl font-bold mb-8 text-slate-800">Food Items</h2>
       {renderTable('Breakfast')}
       {renderTable('Lunch')}
       {renderTable('Dinner')}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import SideNav from '../../components/SideNav'
 import { MdLocationPin } from "react-icons/md";
+import { MdOutlineRamenDining } from "react-icons/md";
+import { GiWoodenChair } from "react-icons/gi";
 import { useRouter } from 'next/router'
 
 const Hotel = () => {
@@ -49,24 +51,26 @@ const Hotel = () => {
         <SideNav />
       </div>
       <div>
-        <div className='bg-blue-400 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
-          <h1 className='font-extrabold text-2xl text-center text-black p-4'>
+        <div className='bg-blue-500 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
+          <h1 className='font-extrabold text-2xl text-center text-white p-4'>
             {hotel.hotel_name}
           </h1>
-          <p className='text-black p-2'>{hotel.hotel_discription}</p>
-          <p className='text-black p-2 flex items-center'>
+          <p className='text-white p-2'>{hotel.hotel_discription}</p>
+          <p className='text-white p-2 flex items-center capitalize'>
             <MdLocationPin />{hotel.location}
           </p>
         </div>
-        <div className='mt-20 ml-20'>
-          <button className='border bg-slate-400 w-48 h-28 rounded-md hover:bg-slate-300'>
-            Tables
+        <div className='w-full flex justify-center gap-10 mt-16'>
+          <button className='border bg-slate-500 w-48 h-28 rounded-md hover:bg-slate-300
+          hover:text-slate-500 flex items-center justify-center'>
+          <GiWoodenChair className=' text-4xl'/>
           </button>
           <button 
-            className='border bg-slate-400 w-48 h-28 rounded-md hover:bg-slate-300 ml-4'
+            className='border bg-slate-500 w-48 h-28 rounded-md hover:bg-slate-300 
+            hover:text-slate-500 flex items-center justify-center'
             onClick={() => router.push(`/foodItems/${hotel.id}`)}
           >
-            Food Items
+            <MdOutlineRamenDining className=' text-4xl'/>
           </button>
         </div>
       </div>
