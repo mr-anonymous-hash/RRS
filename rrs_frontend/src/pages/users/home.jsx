@@ -3,6 +3,7 @@ import './../../app/globals.css'
 import SideNav from '../../components/SideNav'
 import { LuLoader2 } from "react-icons/lu";
 import { useRouter } from 'next/router';
+import { MdLocationPin } from 'react-icons/md';
 
 const home = () => {
   const [username, setUserName] = useState('')
@@ -53,23 +54,25 @@ const home = () => {
     }
   },[])
 
-  const filterHotels = hotels.filter(hotel => hotel.hotel_name.toLowerCase()
-  .includes(search.toLocaleLowerCase()))
+  const filterHotels = hotels.filter(
+    hotel => hotel.hotel_name.toLowerCase().includes(search.toLowerCase()) ||
+  hotel.location.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
 
     <div className="flex min-h-screen bg-gray-100">
-      <div className="w-64 bg-white shadow-md">
+      <div className="bg-white shadow-md">
         <SideNav/>
       </div>
       <div className="flex-1 p-10">
-        <header className="bg-sky-500 text-white p-6 rounded-lg shadow-md mb-8">
-          <h1 className="text-3xl font-bold">Welcome, {username}</h1>
+        <header className="bg-blue-500 text-white p-6 rounded-lg shadow-md mb-8 flex justify-center">
+          <h1 className="text-3xl font-bold capitalize">Welcome, {username}</h1>
         </header>
         <div className="mb-6">
           <input
             type="search"
-            placeholder="Search hotels..."
+            placeholder=" Search hotels..."
             className="w-full p-3 rounded-md border border-gray-300 
             text-black focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={search}
@@ -86,10 +89,12 @@ const home = () => {
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden
                hover:shadow-lg transition-shadow duration-300 text-black"
                onClick={()=>router.push(`/users/hotel/${hotel.id}`)}>
-                <img src={`/api/placeholder/400/240`} alt={hotel.hotel_name} className="w-full h-48 object-cover" />
+                <img src={`https://lh3.googleusercontent.com/a7qP0KhHNMHrAzlThkZUZ-5E314vJAqqMpCAA2PlIKNhaKPqoKN3M5CmQTtQeNf22g_9YD6qQE8AFl0wQRD3ioqZyw=w1200-rw`} 
+                alt={hotel.hotel_name} className="w-full h-48 object-cover" />
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-2">{hotel.hotel_name}</h2>
-                  <p className="text-gray-600">{hotel.location}</p>
+                  <p className="text-gray-600 flex items-center capitalize">
+                    <MdLocationPin/>{hotel.location}</p>
                 </div>
               </div>
             ))}
