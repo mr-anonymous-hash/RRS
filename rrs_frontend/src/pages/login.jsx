@@ -3,13 +3,15 @@ import './../app/globals.css'
 import Head from 'next/head'
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Popup from '../components/Popup';
+import Toast from '../components/Toast';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [popup, setPopup] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [formHide, setFormHide] = useState(false)
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -30,15 +32,26 @@ const Login = () => {
                 setMessage('Login successful');
                 setPopup(true)
                 setTimeout(() => {
+                    setLoading(true)
                     router.push('/home');
-                }, 1500);
+                }, 1000);
             }
         } catch (error) {
             console.error('Error', error);
             setMessage(error.response?.data?.message || 'Login failed. Please try again.');
             setPopup(true)
         }
+
     }
+
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="text-lg font-semibold">Loading...</div>
+          </div>
+        </div>
+      );
 
     return (
         <>
@@ -51,11 +64,9 @@ const Login = () => {
                     <div>
                         <h1 className='font-extrabold text-2xl text-black'>Login</h1>
                     </div>
-                        <Popup
-                            title={message.includes('successful') ? 'Success' : 'Error'}
+                        <Toast
                             message={message}
-                            isOpen={popup}
-                            autoCloseDuration={800}/>
+                            isOpen={popup}/>
                     <div>
                         <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
                             <input
