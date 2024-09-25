@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './../../app/globals.css'
 import SideNav from '../../components/SideNav'
-import { LuLoader2 } from "react-icons/lu";
 import { useRouter } from 'next/router';
 import { MdLocationPin } from 'react-icons/md';
 
@@ -94,10 +93,10 @@ const home = () => {
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden
                hover:shadow-lg transition-shadow duration-300 text-black"
                onClick={()=>router.push(`/users/hotel/${hotel.id}`)}>
-                <img src={`https://lh3.googleusercontent.com/a7qP0KhHNMHrAzlThkZUZ-5E314vJAqqMpCAA2PlIKNhaKPqoKN3M5CmQTtQeNf22g_9YD6qQE8AFl0wQRD3ioqZyw=w1200-rw`} 
+                <img src={`http://localhost:8000/${hotel.image_path}`} 
                 alt={hotel.hotel_name} className="w-full h-48 object-cover" />
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{hotel.hotel_name}</h2>
+                  <h2 className="text-xl font-semibold mb-2 capitalize">{hotel.hotel_name}</h2>
                   <p className="text-gray-600 flex items-center capitalize">
                     <MdLocationPin/>{hotel.location}</p>
                 </div>
