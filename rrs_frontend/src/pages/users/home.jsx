@@ -46,7 +46,9 @@ const home = () => {
       const userObject = JSON.parse(user)
       if(user){
         setUserName(userObject.name)
-        fetchHotels()
+        setTimeout(()=>{
+          fetchHotels()
+        },1000)
       }
     }
     catch(error){
@@ -80,9 +82,12 @@ const home = () => {
           />
         </div>
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <LuLoader2 className="h-8 w-8 animate-spin text-sky-500" />
+          <div className="flex items-center justify-center min-h-screen">
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="text-lg font-semibold">Loading...</div>
           </div>
+        </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filterHotels.map((hotel, index) => (
