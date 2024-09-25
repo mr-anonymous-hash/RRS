@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './../../../app/globals.css'
 import SideNav from '../../../components/SideNav'
 import { useRouter } from 'next/router'
+import { GiWoodenChair } from "react-icons/gi";
 import { MdLocationPin } from 'react-icons/md'
 const hotel = () => {
 
@@ -47,7 +48,7 @@ const hotel = () => {
           <h1 className='font-extrabold text-2xl text-center text-white p-4'>
             {hotel.hotel_name}
           </h1>
-          <p className='text-white p-2'>{hotel.hotel_discription}</p>
+          <p className='text-white p-2'>{hotel.hotel_description}</p>
           <p className='text-white p-2 flex items-center'>
             <MdLocationPin />{hotel.location}
           </p>
@@ -56,8 +57,12 @@ const hotel = () => {
             <p>closing:{hotel.closing_time}</p>
           </div>
         </div>
-        <button className='text-black ml-60 mt-32 bg-slate-400 rounded-md'
-        onClick={()=>router.push(`/users/table/${hotel.id}`)}>Select Table</button>
+        </div>
+        <div className='flex  items-center justify-center mt-10'>
+        <button className='text-white text-xl  bg-slate-500 w-48 h-28 rounded-md
+        hover:text-slate-500 hover:bg-slate-300 items-center justify-center'
+        onClick={()=>router.push(`/users/table/${hotel.id}`)}>
+          Select Table</button>
         </div>
       </div>
     </div>
