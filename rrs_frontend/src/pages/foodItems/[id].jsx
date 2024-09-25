@@ -16,8 +16,8 @@ const FoodItems = () => {
     type: '',
     cuisines: '',
     price: '',
-    meal: 'Breakfast',
-    hotel_id: ''
+    meal: '',
+    hotelId: ''
   });
   const router = useRouter()
   const {id} = router.query
@@ -67,9 +67,15 @@ const FoodItems = () => {
   };
 
   const handleSubmit = async (e) => {
+    const hotel_id = id
     e.preventDefault();
+    if (!newFoodItem.hotelId) {
+      setError("Hotel ID is missing. Please try reloading the page.");
+      return;
+    }
     try {
       const token = localStorage.getItem('token');
+      
       await axios.post('http://localhost:8000/api/fooditems', newFoodItem, {
         headers: {
           'Content-Type': 'application/json',
@@ -78,14 +84,15 @@ const FoodItems = () => {
       });
       setIsPopupOpen(false);
       fetchFoodItems(id);
-      setFoodItems(
+      setNewFoodItem(
         prev => ({
           ...prev,
           food_name:'',
           type: '',
           cuisines: '',
           price: '',
-          meal: 'Breakfast'
+          meal: '',
+          hotelId: hotel_id
         })
       )
     } catch (err) {
@@ -123,7 +130,7 @@ const FoodItems = () => {
     if(id){
       fetchHotel(id)
       fetchFoodItems(id)
-      setFoodItems(prev => ({...prev, hotel_id:id}))
+      setFoodItems(prev => ({...prev, hotelId:id}))
     };
   }, [id]);
 
@@ -156,7 +163,7 @@ const FoodItems = () => {
           <tbody>
             {items.map((item,index) => (
               <tr key={item.id} 
-              className={`border-b hover:bg-gray-300 ${index % 2 === 1 ? 'bg-slate-300 text-white' : ''}`}>
+              className={`border-b hover:bg-gray-400 ${index % 2 === 1 ? 'bg-slate-300 text-white' : ''}`}>
                 <td className="py-2 px-4 text-gray-600">{item.food_name}</td>
                 <td className="py-2 px-4 text-gray-600">{item.type}</td>
                 <td className="py-2 px-4 text-gray-600">{item.cuisines}</td>
@@ -209,8 +216,14 @@ const FoodItems = () => {
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-bold mb-4">Add New Food Item</h2>
+            <h2 className="text-2xl font-bold mb-4 text-slate-900">Add New Food Item</h2>
             <form onSubmit={handleSubmit}>
+            <input
+                  type="hidden"
+                  name="hotelId"
+                  value={newFoodItem.hotelId=id}
+                />
+            {error && <div className="text-red-500 mb-4">{error}</div>}
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="food_name">
                   Food Name
@@ -279,6 +292,7 @@ const FoodItems = () => {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
                 >
+                  <option value=''>--select meal--</option>
                   <option value="Breakfast">Breakfast</option>
                   <option value="Lunch">Lunch</option>
                   <option value="Dinner">Dinner</option>
