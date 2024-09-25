@@ -55,7 +55,7 @@ const Hotel = () => {
           <h1 className='font-extrabold text-2xl text-center text-white p-4'>
             {hotel.hotel_name}
           </h1>
-          <p className='text-white p-2'>{hotel.hotel_discription}</p>
+          <p className='text-white p-2'>{hotel.hotel_description}</p>
           <p className='text-white p-2 flex items-center capitalize'>
             <MdLocationPin />{hotel.location}
           </p>
