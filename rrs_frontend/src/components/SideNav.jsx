@@ -33,7 +33,7 @@ const SideNav = () => {
       {
         role !== true ? (<a 
           onClick={logout} 
-          className='cursor-pointer hover:bg-red-500 p-2 rounded transition duration-200 flex items-center'
+          className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200 flex items-center'
         >
           <FaRegUserCircle className='text-xl'/>Settings
         </a>) : (
