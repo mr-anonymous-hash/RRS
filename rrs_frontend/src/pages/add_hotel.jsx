@@ -21,7 +21,6 @@ const AddHotels = () => {
   });
 
   const [image, setImage] = useState(null);
-  const [error, setError] = useState('');
   const [popup, setPopup] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -61,9 +60,9 @@ const AddHotels = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
-    const requiredFields = ['hotel_name', 'location', 'hotel_category', 'total_tables', 'opening_time', 'closing_time', 'adminId'];
+    const requiredFields = ['hotel_name', 'location', 'hotel_category', 'total_tables',
+       'opening_time', 'closing_time', 'adminId'];
     const missingFields = requiredFields.filter(field => !hotelData[field]);
     
     if (missingFields.length > 0) {
@@ -177,7 +176,7 @@ const AddHotels = () => {
     <div>
       <label className="block text-sm font-medium text-gray-700">Contact Number</label>
       <input
-        type="text"
+        type="tel"
         name="contact_number"
         value={hotelData.contact_number}
         onChange={handleInput}
