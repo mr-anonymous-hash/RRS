@@ -8,7 +8,8 @@ import { MdLogout } from "react-icons/md";
 
 const SideNav = () => {
   const router = useRouter();
-  const [role, setRole] = useState('') 
+  const [role, setRole] = useState('')
+  const [userId, setUserId] = useState('') 
   const logout = () => {
     localStorage.removeItem('token')
     router.push('/login')
@@ -17,8 +18,9 @@ const SideNav = () => {
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem('user'))
     const userRole = user.role
+    const userId  = user.user_id
     setRole(userRole)
-    
+    setUserId(userId) 
   })
  
   return (
@@ -32,7 +34,7 @@ const SideNav = () => {
       </a>
       {
         role !== true ? (<a 
-          onClick={()=> router.push('/users/settings')} 
+          onClick={()=> router.push(`/users/settings/${userId}`)} 
           className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200 flex items-center'
         >
           <FaRegUserCircle className='text-xl'/>Settings
