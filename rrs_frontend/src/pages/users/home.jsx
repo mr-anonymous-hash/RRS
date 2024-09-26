@@ -37,7 +37,7 @@ const Home = () => {
     }
   }
 
-  useEffect(() => {
+   useEffect(() => {
     const user = localStorage.getItem('user')
     try {
       const userObject = JSON.parse(user)
@@ -69,6 +69,17 @@ const Home = () => {
     setSearch(e.target.value)
   }
 
+  if(loading){
+    return(
+      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center space-x-2">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="text-lg font-semibold text-slate-800">Loading...</div>
+      </div>
+    </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="bg-white shadow-md">
@@ -87,14 +98,7 @@ const Home = () => {
             onChange={handleSearchChange}
           />
         </div>
-        {loading ? (
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-              <div className="text-lg font-semibold">Loading...</div>
-            </div>
-          </div>
-        ) : (
+        { (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {hotels.map((hotel, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 text-black"
