@@ -3,7 +3,7 @@ import './../../../app/globals.css'
 import SideNav from '../../../components/SideNav'
 import { useRouter } from 'next/router'
 import { GiWoodenChair } from "react-icons/gi";
-import { MdLocationPin } from 'react-icons/md'
+import { MdLocationPin, MdTableRestaurant } from 'react-icons/md'
 const hotel = () => {
 
   const router = useRouter()
@@ -44,7 +44,7 @@ const hotel = () => {
       </div>
       <div>
         <div className=''>
-        <div className='bg-blue-500 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
+        <div className='bg-blue-500 h-56 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
           <h1 className='font-extrabold text-2xl text-center text-white p-4'>
             {hotel.hotel_name}
           </h1>
@@ -58,12 +58,18 @@ const hotel = () => {
           </div>
         </div>
         </div>
-        <div className='flex  items-center justify-center mt-10'>
-        <button className='text-white text-xl  bg-slate-500 w-48 h-28 rounded-md
-        hover:text-slate-500 hover:bg-slate-300 items-center justify-center'
-        onClick={()=>router.push(`/users/table/${hotel.id}`)}>
-          Select Table</button>
+        <div className="flex items-center justify-center mt-10">
+          <span
+          className="text-white text-xl bg-slate-500 w-48 h-28 rounded-md 
+          hover:text-slate-500 hover:bg-slate-300 flex flex-col items-center
+           justify-center cursor-pointer"
+          onClick={() => router.push(`/users/table/${hotel.id}`)}
+          >
+            <MdTableRestaurant className="text-4xl" />
+            <label className="">Book Table</label>
+          </span>
         </div>
+
       </div>
     </div>
   )
