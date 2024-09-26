@@ -119,16 +119,19 @@ const Tables = () => {
 
   return (
     <div className="bg-white m-20">
-      <span className="rounded-xl">
-        <MdOutlineArrowBack
-          className="text-black bg-slate-400 rounded-xl text-xl cursor-pointer"
-          onClick={() => router.back()}
-        />
-      </span>
-      <h2 className="text-2xl font-bold mb-4 text-black">
-        {hotelDetail?.hotel_name || 'Table Booking'}
-      </h2>
+      <div className="flex items-center justify-start space-x-2">
+        <span className="rounded-full bg-slate-400 ">
+          <MdOutlineArrowBack
+            className="text-black rounded-full text-xl cursor-pointer"
+            onClick={() => router.back()}
+          />
+        </span>
+        <h2 className="text-2xl font-bold text-black">
+          {hotelDetail?.hotel_name || 'Table Booking'}
+        </h2>
+      </div>
 
+      
       {renderBookingForm()}
 
       {bookingInfo.tableSize && (
