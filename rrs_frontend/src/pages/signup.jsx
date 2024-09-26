@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './../app/globals.css'
 import Head from 'next/head'
-import Popup from '../components/Popup'
+import Toast from '../components/Toast'
 
 const Signup = () => {
     const [name, setName] = useState('')
@@ -14,7 +14,7 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setMessage('') // Clear any previous messages
+        setMessage('')
 
         try {
             const res = await fetch('http://localhost:8000/api/signup', {
@@ -45,10 +45,6 @@ const Signup = () => {
         }
     }
 
-    const handlePopup = () => {
-        setPopup(false)
-    }
-
     return (
         <>
             <Head>
@@ -59,7 +55,6 @@ const Signup = () => {
                     <div>
                         <h1 className='font-extrabold text-2xl text-black'>Sign Up</h1>
                     </div>
-                    {/* {message && <div className={`text-sm ${message.includes('successful') ? 'text-green-600' : 'text-red-600'}`}>{message}</div>} */}
                     <form onSubmit={handleSubmit} className='flex flex-col gap-2'>
                         <input 
                             type='text' 
@@ -112,13 +107,9 @@ const Signup = () => {
                     </div>
                 </div>
             </div>
-            <Popup
-                title={message.includes('successful') ? 'Success' : 'Error'}
-                message={message}
-                isOpen={popup}
-                onClose={handlePopup}
-                autoCloseDuration={800}
-            />
+            <Toast
+            message={message}
+            isOpen={popup}/>
         </>
     )
 }
