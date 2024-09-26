@@ -22,9 +22,23 @@ const updateUserPassword = async(id, newPass) => {
     }
 } 
 
+const updateUserEmail = async(id,  email) => {
+    try{
+        const updateEmail = await User.update(
+            {email: email},
+            {where:{id: id}}
+        )
+        return updateEmail
+    }
+    catch(error){
+        console.error('Error updating Email:', error);
+    }
+}
+
 const updateUser = async(id, data) => await db_factory.updateRecord(User, id, data)
 const deleteUser = async (id)=> await db_factory.deleteRecord(User, id)
 
 module.exports = {
-    getAllUsers,getUserById,updateUser, updateUserPassword,deleteUser
+    getAllUsers,getUserById,updateUser,
+    updateUserPassword,updateUserEmail,deleteUser
 }

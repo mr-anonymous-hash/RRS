@@ -87,6 +87,23 @@ const updateUserPassword = async(req, res) => {
     }
 };
 
+const updateUserEmail = async(req, res) => {
+    const id = req.params.id
+    const {email} = req.body
+    console.log(email)
+    try{
+        const updateEmail = await users_crud.updateUserEmail(id, email)
+        if(updateEmail) res.status(200).send('Email Updated Successfully')
+        else {res.status(400).send('Unable to Update Email')
+        console.error('Unable to Update Email')
+        }
+
+    }
+    catch(error){
+        console.error(`Error While Updating Email ${error}`)
+    }
+}
+
 const deleteUser = async(req, res) => {
     const id = req.params.id
     try{
@@ -105,5 +122,6 @@ const deleteUser = async(req, res) => {
 
 module.exports = {
     getAllUsers,getUserById,
-    updateUser,updateUserPassword,deleteUser
+    updateUser,updateUserPassword,
+    updateUserEmail,deleteUser
 }
