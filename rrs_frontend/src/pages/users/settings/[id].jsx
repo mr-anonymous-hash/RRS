@@ -50,7 +50,7 @@ const Settings = () => {
   const changePassword = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:8000/api/users/${id}`, {
+      const res = await fetch(`http://localhost:8000/api/users/password/${id}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -80,7 +80,7 @@ const Settings = () => {
   const changeEmail = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:8000/api/users/${id}`, {
+      const res = await fetch(`http://localhost:8000/api/users/email/${id}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
