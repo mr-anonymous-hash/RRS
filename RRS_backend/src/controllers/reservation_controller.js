@@ -18,18 +18,24 @@ const getReservationsById = async(req, res) => {
 
 const createReservation = async(req, res) => {
     const {
-        no_of_guest,
+        no_of_guests,
         reserved_tables,
+        selected_tables,
         selected_food,
         reservation_time,
-        status } = req.body
+        status,
+        hotelId,
+        userId } = req.body
         
     const data = {
-        no_of_guest,
+        no_of_guests,
         reserved_tables,
-        selected_food: selected_food.join(','),
-        reservation_time,
-        status}
+        selected_tables: Array.isArray(selected_tables) ? selected_tables.join(',') : '',
+        selected_food: Array.isArray(selected_food) ? selected_food.join(',') : '',
+        reservation_time: new Date(reservation_time),
+        status,
+        hotelId,
+        userId }
     
     const reservation = await reservations_crud.createReservation(data)
     if(reservation){
