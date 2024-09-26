@@ -56,6 +56,37 @@ const updateUser = async(req, res) => {
     }
 }
 
+const updateUserPassword = async(req, res) => {
+    const id = req.params.id;
+    const {currentPassword, newPassword, confirmPassword} = req.body;
+    console.log(currentPassword, newPassword, confirmPassword)
+    try {
+        if(newPassword !== confirmPassword) {
+            return res.status(400).json({ message: 'New password and confirmation do not match' });
+        }
+
+        const user = await users_crud.getUserById(id);
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if(!isMatch) {
+            return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        const updateUserPassword = await users_crud.updateUserPassword(id, newPassword);
+        if(updateUserPassword) {
+            return res.status(200).json({ message: 'Password updated successfully' });
+        } else {
+            return res.status(400).json({ message: 'Unable to update user password' });
+        }
+    } catch(error) {
+        console.error('Error updating password:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
 const deleteUser = async(req, res) => {
     const id = req.params.id
     try{
@@ -74,5 +105,5 @@ const deleteUser = async(req, res) => {
 
 module.exports = {
     getAllUsers,getUserById,
-    updateUser,deleteUser
+    updateUser,updateUserPassword,deleteUser
 }
