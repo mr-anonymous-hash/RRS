@@ -15,7 +15,7 @@ const settings = () => {
         ml-10 mt-10 rounded-lg min-h-60 min-w-60 cursor-pointer
         hover:bg-slate-300 hover:text-slate-500 flex items-center justify-center'
         onClick={()=>router.push('/add_hotel')}>
-          <p className=''>Add Hotels</p>  
+          <p className='text-xl'>Add Hotels</p>  
         </div>
       </div>
     </div>
