@@ -73,6 +73,7 @@ const createHotel = async(req, res) => {
             if (req.file) {
                 image_path = req.file.path;
             }
+            const categoryArray = Array.isArray(hotel_category) ? hotel_category : hotel_category ? hotel_category.split(',') : [];
             const cuisinesArray = Array.isArray(cuisines) ? cuisines : cuisines ? cuisines.split(',') : [];
             const breakFastArray = Array.isArray(breakfast_items) ? breakfast_items : breakfast_items ? breakfast_items.split(',') : [];
             const lunchArray = Array.isArray(lunch_items) ? lunch_items : lunch_items ? lunch_items.split(',') : [];
@@ -84,10 +85,10 @@ const createHotel = async(req, res) => {
                 hotel_name,
                 location,
                 hotel_description,
-                contact_number,
+                contact_number: contact_number!== undefined ? contact_number : '',
                 total_tables,
                 table_config: parsedTableConfig,
-                hotel_category,
+                hotel_category: categoryArray.join(','),
                 cuisines: cuisinesArray.join(',') , 
                 breakfast_items: breakFastArray.join(','),
                 lunch_items: lunchArray.join(','),
