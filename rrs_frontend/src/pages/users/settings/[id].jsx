@@ -120,7 +120,8 @@ const Settings = () => {
         <div className="mt-6 flex flex-col gap-10">
           <div>
             <button
-              className="py-2 px-4 bg-blue-500 text-white rounded-md"
+              className="py-2 px-4 bg-slate-500 hover:bg-slate-300 hover:text-slate-500
+               text-white rounded-md"
               onClick={() => setPopupType('email')}
             >
               Change Email
@@ -129,7 +130,8 @@ const Settings = () => {
 
           <div>
             <button
-              className="py-2 px-4 bg-green-500 text-white rounded-md"
+              className="py-2 px-4 bg-slate-500 hover:bg-slate-300 hover:text-slate-500
+               text-white rounded-md"
               onClick={() => setPopupType('password')}
             >
               Change Password
