@@ -45,7 +45,7 @@ const Hotel = sequelize.define('hotel', {
       allowNull: false
     },
     hotel_description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true
     },
     hotel_category: {
