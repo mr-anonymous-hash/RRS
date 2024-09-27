@@ -16,9 +16,32 @@ const getReservationsById = async(req, res) => {
     }
 }
 
+const getReservationsByUserId = async(req, res) => {
+    const id = req.params.id
+    const reservation = await reservations_crud.getReservationByUserId(id)
+    if(reservation){
+        res.status(200).send(reservation)
+    }
+    else{
+        res.status(404).send('Data not Found')
+    }
+}
+
+const getReservationsByHotelId = async(req, res) => {
+    const id = req.params.id
+    const reservation = await reservations_crud.getReservationByHotelId(id)
+    if(reservation){
+        res.status(200).send(reservation)
+    }
+    else{
+        res.status(404).send('Data not Found')
+    }
+}
+
 const createReservation = async(req, res) => {
     const {
         no_of_guests,
+        table_size,
         reserved_tables,
         selected_tables,
         selected_food,
@@ -29,6 +52,7 @@ const createReservation = async(req, res) => {
         
     const data = {
         no_of_guests,
+        table_size, 
         reserved_tables,
         selected_tables: Array.isArray(selected_tables) ? selected_tables.join(',') : '',
         selected_food: Array.isArray(selected_food) ? selected_food.join(',') : '',
@@ -59,5 +83,7 @@ const deleteReservation = async(req, res) => {
 }
 
 module.exports = {
-    getAllReservations,getReservationsById,createReservation,deleteReservation
+    getAllReservations,getReservationsById,
+    getReservationsByUserId,getReservationsByHotelId,
+    createReservation,deleteReservation
 }
