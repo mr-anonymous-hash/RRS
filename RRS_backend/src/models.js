@@ -112,6 +112,10 @@ const Reservation = sequelize.define('reservations', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  table_size:{
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   selected_tables: {
     type: DataTypes.JSON,
     allowNull: false
