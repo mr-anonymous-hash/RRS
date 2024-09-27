@@ -6,6 +6,7 @@ import FoodSelection from './../../../components/FoodSelection';
 
 const Tables = () => {
   const [hotelDetail, setHotelDetail] = useState(null);
+  const [reservations, setReservations] = useState([]); // Changed to plural and initialized as an array
   const [bookingInfo, setBookingInfo] = useState({
     reservationTime: '',
     tableSize: '',
@@ -42,8 +43,37 @@ const Tables = () => {
     }
   };
 
+  const fetchReservations = async(hotelId) => {
+    const token = localStorage.getItem('token')
+    try {
+          const res = await fetch(`http://localhost:8000/api/reservations/hotel/${hotelId}`,
+        {
+          method:'GET',
+          headers:{
+            'Authorization':`Bearer ${token}`,
+            'Content-Type' : 'application/json'
+          }
+        }
+      )
+
+      if(res.ok){
+        const data = await res.json()
+        setReservations(data)
+      }
+      else{
+        console.error('Unable to fetch reservations')
+      }
+    }
+    catch(error){
+      console.error(`Error while fetching reservations ${error}`)
+    }
+  }
+
   useEffect(() => {
-    if (router.query.id) fetchHotelDetails(router.query.id);
+    if (router.query.id){ 
+      fetchHotelDetails(router.query.id); 
+      fetchReservations(router.query.id)
+    }
   }, [router.query.id]);
 
   const handleInputChange = (e) => {
@@ -67,7 +97,16 @@ const Tables = () => {
     }
   };
 
+  const isTableBooked = (tableNumber) => {
+    return reservations.some(res => 
+      res.table_size === parseInt(bookingInfo.tableSize) && 
+      res.selected_tables.includes(tableNumber)
+    );
+  };
+
   const handleTableSelection = (tableNumber) => {
+    if (isTableBooked(tableNumber)) return; 
+    
     setSelectedTables(prevSelected => {
       if (prevSelected.includes(tableNumber)) {
         return prevSelected.filter(t => t !== tableNumber);
@@ -118,6 +157,7 @@ const Tables = () => {
         no_of_guests: parseInt(bookingInfo.guestCount),
         selected_tables: selectedTables,
         reserved_tables: selectedTables.length,
+        table_size: parseInt(bookingInfo.tableSize),
         selected_food: selectedFood.map(food => food.id),
         reservation_time: bookingInfo.reservationTime,
         status: 'pending',
@@ -138,6 +178,7 @@ const Tables = () => {
         const result = await response.json();
         console.log('Reservation created:', result);
         setBookingConfirmed(true);
+        fetchReservations(); // Refresh reservations after booking
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to create reservation');
@@ -152,8 +193,8 @@ const Tables = () => {
 
   const renderBookingForm = () => (
     <div className="mt-4 p-4 border rounded">
-      <h3 className="text-xl mb-2 text-black">Booking Information</h3>
-      <div className='text-black'>
+      <h3 className="text-xl mb-2 text-slate-800">Booking Information</h3>
+      <div className='text-slate-800'>
         <input
           type="datetime-local"
           name="reservationTime"
@@ -186,22 +227,28 @@ const Tables = () => {
 
   const renderTables = () => (
     <div className="grid grid-cols-3 gap-4 text-center">
-      {availableTables.map((tableNumber) => (
-        <div
-          key={tableNumber}
-          className={`relative bg-gray-200 w-40 h-40 flex flex-col items-center justify-center
-             text-black cursor-pointer rounded-lg
-             ${selectedTables.includes(tableNumber) ? 'border-4 border-blue-500' : ''}`}
-          onClick={() => handleTableSelection(tableNumber)}
-        >
-          <div className="text-2xl font-bold mb-2">Table {tableNumber}</div>
-          <div className="flex flex-wrap justify-center">
-            {Array.from({ length: parseInt(bookingInfo.tableSize) }, (_, i) => (
-              <div key={i} className="w-6 h-6 m-1 bg-gray-400 rounded-full"></div>
-            ))}
+      {availableTables.map((tableNumber) => {
+        const isBooked = isTableBooked(tableNumber);
+        return (
+          <div
+            key={tableNumber}
+            className={`relative bg-gray-200 w-40 h-40 flex flex-col items-center justify-center
+              text-slate-800 cursor-pointer rounded-lg
+              ${selectedTables.includes(tableNumber) ? 'border-4 border-blue-500' : ''}
+              ${isBooked ? 'bg-red-200 cursor-not-allowed' : ''}`}
+            onClick={() => !isBooked && handleTableSelection(tableNumber)}
+          >
+            <div className="text-2xl font-bold mb-2">Table {tableNumber}</div>
+            <div className="flex flex-wrap justify-center">
+              {Array.from({ length: parseInt(bookingInfo.tableSize) }, (_, i) => (
+                <div key={i} className="w-6 h-6 m-1 bg-gray-400 rounded-full"></div>
+              ))}
+            </div>
+            {isBooked && <div className="absolute inset-0 flex items-center justify-center
+             bg-red-500 bg-opacity-50 hover:cursor-not-allowed text-white rounded-lg font-bold">Booked</div>}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 
@@ -214,7 +261,7 @@ const Tables = () => {
             onClick={() => router.back()}
           />
         </span>
-        <h2 className="text-2xl font-bold text-black">
+        <h2 className="text-2xl font-bold text-slate-800 capitalize">
           {hotelDetail?.hotel_name || 'Table Booking'}
         </h2>
       </div>
@@ -226,7 +273,7 @@ const Tables = () => {
           <h3 className="text-xl mb-2 text-black">Select Tables ({bookingInfo.tableSize} seater)</h3>
           {renderTables()}
           <FoodSelection 
-            foodItems={hotelDetail?.fooditems || []} 
+            hotelId={router.query.id} 
             onFoodSelect={handleFoodSelection}
           />
           <button
