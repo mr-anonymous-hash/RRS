@@ -114,7 +114,7 @@ const Bookings = () => {
                 <p><strong>Reserved Tables:</strong> {selectedReservation.reserved_tables}</p>
                 <p><strong>Selected Food:</strong> {selectedReservation.selected_food}</p>
                 <p><strong>Reservation Time:</strong> {selectedReservation.reservation_time}</p>
-                <p><strong>Status:</strong> {selectedReservation.status}</p>
+                <p><strong>Status:</strong> {selectedReservation.status == 'pending' ? 'Booked' : <></> }</p>
               </div>
             </div>
           </div>
