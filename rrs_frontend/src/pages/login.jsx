@@ -10,8 +10,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [popup, setPopup] = useState(false)
-    const [loading, setLoading] = useState(false);
-    const [formHide, setFormHide] = useState(false)
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -32,7 +30,6 @@ const Login = () => {
                 setMessage('Login successful');
                 setPopup(true)
                 setTimeout(() => {
-                    setLoading(true)
                     router.push('/home');
                 }, 1000);
             }
@@ -41,17 +38,11 @@ const Login = () => {
             setMessage(error.response?.data?.message || 'Login failed. Please try again.');
             setPopup(true)
         }
+        finally{
+            setPopup(false)
+        }
 
     }
-
-    if (loading) return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-            <div className="text-lg font-semibold">Loading...</div>
-          </div>
-        </div>
-      );
 
     return (
         <>
