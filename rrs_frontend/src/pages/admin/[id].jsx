@@ -52,17 +52,18 @@ const Hotel = () => {
       </div>
       <div>
         <div className='bg-blue-500 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
-          <h1 className='font-extrabold text-2xl text-center text-white p-4'>
+          <h1 className='font-extrabold text-2xl text-center text-white p-4 capitalize'>
             {hotel.hotel_name}
           </h1>
-          <p className='text-white p-2'>{hotel.hotel_description}</p>
-          <p className='text-white p-2 flex items-center capitalize'>
+          <p className='text-white px-4'>{hotel.hotel_description}</p>
+          <p className='text-white p-4 flex items-center capitalize'>
             <MdLocationPin />{hotel.location}
           </p>
         </div>
         <div className='w-full flex justify-center gap-10 mt-16'>
           <button className='border bg-slate-500 w-48 h-28 rounded-md hover:bg-slate-300
-          hover:text-slate-500 flex items-center justify-center'>
+          hover:text-slate-500 flex items-center justify-center'
+          onClick={()=> router.push(`/admin/bookings/${hotel.id}`)}>
           <GiWoodenChair className=' text-4xl'/>
           </button>
           <button 
