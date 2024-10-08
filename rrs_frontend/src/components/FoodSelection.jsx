@@ -66,7 +66,7 @@ const FoodSelection = ({ hotelId, onFoodSelect }) => {
             onClick={() => handleFoodSelection(item)}
           >
             <p className="font-bold">{item.food_name}</p>
-            <p>Price: ${item.price}</p>
+            <p>Price:₹{item.price}</p>
             <p>Type: {item.type}</p>
             <p>Meal: {item.meal}</p>
           </div>
@@ -76,11 +76,11 @@ const FoodSelection = ({ hotelId, onFoodSelect }) => {
         <h4 className="text-lg text-slate-800 font-bold">Selected Items:</h4>
         <ul>
           {selectedFood.map(item => (
-            <li key={item.id} className='text-slate-500'>{item.food_name} - ${item.price}</li>
+            <li key={item.id} className='text-slate-500'>{item.food_name} - ₹{item.price}</li>
           ))}
         </ul>
         <p className="font-bold text-slate-500 mt-2">
-          Total: ${selectedFood.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+          Total: ₹{selectedFood.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
         </p>
       </div>
     </div>
