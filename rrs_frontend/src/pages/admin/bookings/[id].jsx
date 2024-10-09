@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import SideNav from '../../../components/SideNav';
 import './../../../app/globals.css';
-
+import { GrClose } from "react-icons/gr";
 
 const Bookings = () => {
   const router = useRouter();
-  const [hotel, setHotel] = useState(null);
+  const [hotel, setHotel] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [foodItems, setFoodItems] = useState([]);
   const [error, setError] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -56,10 +57,36 @@ const Bookings = () => {
     }
   };
 
+  const fetchFoodItems = async(id)=>{
+    
+    const token = localStorage.getItem('token')
+
+    try{
+      const res = await fetch(`http://localhost:8000/api/fooditems/hotel/${id}`,{
+        method: 'GET',
+        headers:{
+          'Authorization':`Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch hotel: ${res.status} ${res.statusText}`);
+      }
+      const data = await res.json();
+      setFoodItems(data)
+    }
+    catch(error){
+      console.error(`Error fetching hotel: ${error}`);
+      setError(`Error fetching hotel: ${error.message}`);
+    }
+    
+  }
+
   useEffect(() => {
     if (router.query.id) {
       fetchReservations(router.query.id);
       fetchHotel(router.query.id);
+      fetchFoodItems(router.query.id);
     }
   }, [router.query.id]);
 
@@ -104,17 +131,23 @@ const Bookings = () => {
                   onClick={closeModal}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  ×
+                  <GrClose />
                 </button>
               </div>
               <div className="text-slate-500">
                 <p><strong>Number of Guests:</strong> {selectedReservation.no_of_guests}</p>
                 <p><strong>Table Size:</strong> {selectedReservation.table_size} Seater</p>
                 <p><strong>Selected Tables:</strong> {selectedReservation.selected_tables}</p>
-                <p><strong>Reserved Tables:</strong> {selectedReservation.reserved_tables}</p>
-                <p><strong>Selected Food:</strong> {selectedReservation.selected_food}</p>
+                <p><strong>Reserved Tables:</strong> {selectedReservation.reserved_tables}</p>                
                 <p><strong>Reservation Time:</strong> {selectedReservation.reservation_time}</p>
                 <p><strong>Status:</strong> {selectedReservation.status == 'pending' ? 'Booked' : <></> }</p>
+                <div>
+                <strong>Selected Food:</strong>
+                  {
+                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id)).
+                    map((food)=><p key={food.id}>{food.food_name} - ₹{food.price}</p>)
+                  }
+                </div>
               </div>
             </div>
           </div>
