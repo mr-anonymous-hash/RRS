@@ -147,6 +147,10 @@ const Bookings = () => {
                     foodItems.filter(food => selectedReservation.selected_food.includes(food.id)).
                     map((food)=><p key={food.id}>{food.food_name} - ₹{food.price}</p>)
                   }
+                  <p> <strong>Total :</strong> ₹ {
+                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id)).
+                    reduce((total, food) => total+food.price, 0)
+                    }</p>
                 </div>
               </div>
             </div>
