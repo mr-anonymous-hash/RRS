@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './../../../app/globals.css'
 import SideNav from '../../../components/SideNav'
 import { useRouter } from 'next/router'
-import { GiWoodenChair } from "react-icons/gi";
 import { MdLocationPin, MdTableRestaurant } from 'react-icons/md'
+
 const hotel = () => {
 
   const router = useRouter()
