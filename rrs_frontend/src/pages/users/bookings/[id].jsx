@@ -72,12 +72,29 @@ const Bookings = () => {
                     <div key={booking.id}>
                     <div className='w-auto h-auto bg-slate-300 p-2 rounded-md'>
                         {
-                            hotel && <strong  className='text-black text-lg capitalize'>{hotel.hotel_name}</strong>
+                            hotel && <strong  className='text-slate-800 text-xl capitalize'>{hotel.hotel_name
+                            }</strong>
                         }
-                    <p className='text-black'>Booking Time: {new Date('1970-01-01T' + booking.reservation_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
-                    <p className='text-black'>Table Size: {booking.table_size} Seater</p>
-                    <p className='text-black'>Booked Table: {booking.selected_tables}</p>
-                    <p className='text-black'>Table No: {booking.reserved_tables}</p>
+                    <p className='text-slate-600'>
+                        <strong className='text-slate-600'>
+                            Booking Time:
+                        </strong>
+                        {new Date('1970-01-01T' + booking.reservation_time).toLocaleTimeString([], 
+                            { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </p>
+                    <p className='text-slate-600'>
+                        <strong className='text-slate-600'>Table Size:</strong> {booking.table_size} Seater
+                    </p>
+                    <p className='text-slate-600'>
+                        <strong className='text-slate-600'>Table No: </strong>{booking.selected_tables}
+                    </p>
+                    { booking.reserved_tables > 1 ? 
+                    (<p className='text-slate-600'>
+                        <strong className='text-slate-600'>Booked Tables:</strong> {booking.reserved_tables }
+                    </p>) :
+                     (<p className='text-slate-600'>
+                        <strong className='text-slate-600'>Booked Table:</strong> {booking.reserved_tables }
+                     </p>) }
                     </div>
                     </div>
                     )
