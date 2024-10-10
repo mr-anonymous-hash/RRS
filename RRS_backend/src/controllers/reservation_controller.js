@@ -56,7 +56,12 @@ const createReservation = async(req, res) => {
         reserved_tables,
         selected_tables: Array.isArray(selected_tables) ? selected_tables.join(',') : '',
         selected_food: Array.isArray(selected_food) ? selected_food.join(',') : '',
-        reservation_time: new Date(reservation_time),
+        reservation_time: new Date(reservation_time).toLocaleTimeString([],
+            {
+            hour:'2-digit',
+            minute:'2-digit',
+            hour12: false
+        }),
         status,
         hotelId,
         userId }
