@@ -112,11 +112,11 @@ const Bookings = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-black">
           {reservations.map((reservation) => (
             <div key={reservation.id} reservation={reservation}>
-              <div className='w-auto h-auto bg-slate-300 p-2 rounded-md'  onClick={()=>handleModal(reservation)}>
-                <p> Number Of Guests: {reservation.no_of_guests}</p>
-                <p> Reserved Tables: {reservation.reserved_tables}</p>
-                <p> Table Size : {reservation.table_size} Seater</p>
-                <p> Table No: {reservation.selected_tables}</p>
+              <div className='w-auto h-auto bg-slate-300 p-2 rounded-md text-slate-600'  onClick={()=>handleModal(reservation)}>
+                <p><strong>Number Of Guests:</strong>  {reservation.no_of_guests}</p>
+                <p><strong>Reserved Tables:</strong> {reservation.reserved_tables}</p>
+                <p><strong>Table Size :</strong> {reservation.table_size} Seater</p>
+                <p><strong>Table No:</strong> {reservation.selected_tables}</p>
                 <p className='text-green-600 font-semibold'> Status: {reservation.status == 'pending' ? 'Booked' :  <></>}</p>
               </div>
             </div>
@@ -134,23 +134,42 @@ const Bookings = () => {
                   <GrClose />
                 </button>
               </div>
-              <div className="text-slate-500">
+              <div className="text-slate-600">
                 <p><strong>Number of Guests:</strong> {selectedReservation.no_of_guests}</p>
                 <p><strong>Table Size:</strong> {selectedReservation.table_size} Seater</p>
                 <p><strong>Selected Tables:</strong> {selectedReservation.selected_tables}</p>
                 <p><strong>Reserved Tables:</strong> {selectedReservation.reserved_tables}</p>                
-                <p><strong>Reservation Time:</strong> {selectedReservation.reservation_time}</p>
+                <p><strong>Reservation Time:</strong> {new Date('1970-01-01T' + selectedReservation.
+                reservation_time).toLocaleTimeString([],{hour:'2-digit', minute: '2-digit', hour12:true }
+                )}</p>
                 <p><strong>Status:</strong> {selectedReservation.status == 'pending' ? 'Booked' : <></> }</p>
                 <div>
                 <strong>Selected Food:</strong>
-                  {
-                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id)).
-                    map((food)=><p key={food.id}>{food.food_name} - ₹{food.price}</p>)
-                  }
-                  <p> <strong>Total :</strong> ₹ {
-                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id)).
-                    reduce((total, food) => total+food.price, 0)
-                    }</p>
+                  <table className='min-w-full'>
+                    <thead className='bg-gray-100 '>
+                      <tr>
+                        <th className='p-2 text-left'>Food Item</th>
+                        <th className='p-2 text-left'>Price (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody className='border-b'>
+                      {
+                        foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
+                        .map((food) => (
+                          <tr key={food.id}>
+                            <td className='p-2'>{food.food_name}</td>
+                            <td className='p-2'>₹{food.price}</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+
+                  <p className='p-2 text-right mr-24'><strong>Total :</strong> ₹{
+                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
+                    .reduce((total, food) => total + food.price, 0)
+                  }</p>
+
                 </div>
               </div>
             </div>
