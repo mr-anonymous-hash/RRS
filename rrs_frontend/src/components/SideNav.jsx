@@ -4,7 +4,7 @@ import './../app/globals.css'
 import { TiHomeOutline } from "react-icons/ti";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlineEventAvailable } from "react-icons/md";
 
 const SideNav = () => {
   const router = useRouter();
@@ -32,6 +32,16 @@ const SideNav = () => {
       >
        <TiHomeOutline className='text-xl'/> Home
       </a>
+      {
+        role !== true && (
+          <a 
+            onClick={()=> router.push(`/users/bookings/${userId}`)}
+            className='cursor-pointer hover:bg-gray-700 p-2 rounded transition duration-200 flex items-center'
+          >
+            <MdOutlineEventAvailable className='text-xl'/>Bookings
+          </a>
+        )
+      }
       {
         role !== true ? (<a 
           onClick={()=> router.push(`/users/settings/${userId}`)} 
