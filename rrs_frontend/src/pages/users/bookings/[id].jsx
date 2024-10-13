@@ -3,6 +3,7 @@ import SideNav from '../../../components/SideNav'
 import './../../../app/globals.css'
 import { useRouter } from 'next/router'
 import { GrClose } from 'react-icons/gr'
+import { FaHotel } from "react-icons/fa6";
 
 const Bookings = () => {
 
@@ -97,7 +98,7 @@ const Bookings = () => {
         <SideNav/>
       </div>
       <div className='p-8'>
-        <h1 className='text-2xl font-bold mb-4 capitalize text-slate-800'>Your Bookings:</h1>
+        <h1 className='text-3xl font-bold mb-4 capitalize text-slate-800'>Your Bookings:</h1>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {
             bookings.length === 0 ? ( 
@@ -113,10 +114,10 @@ const Bookings = () => {
                             setSelectedHotel(hotel)
                             }}>
                             {
-                                hotel && <strong  className='text-slate-800 text-xl capitalize'>{hotel.hotel_name
+                                hotel && <strong  className='text-slate-800 text-xl capitalize flex '><FaHotel className='mr-2'/>{hotel.hotel_name
                                 }</strong>
                             }
-                        <p className='text-slate-600'>
+                        <p className='text-sm text-slate-600'>
                             <strong className='text-slate-600'>
                                 Booking Time:
                             </strong>
@@ -130,10 +131,10 @@ const Bookings = () => {
                             <strong className='text-slate-600'>Table No: </strong>{booking.selected_tables}
                         </p> */}
                         { booking.reserved_tables > 1 ? 
-                        (<p className='text-slate-600'>
+                        (<p className='text-sm text-slate-600'>
                             <strong className='text-slate-600'>Booked Tables:</strong> {booking.reserved_tables }
                         </p>) :
-                         (<p className='text-slate-600'>
+                         (<p className='text-sm text-slate-600'>
                             <strong className='text-slate-600'>Booked Table:</strong> {booking.reserved_tables }
                          </p>) }
                         </div>
@@ -148,7 +149,7 @@ const Bookings = () => {
                     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center '>
                         <div className='bg-white p-6 rounded-lg max-w-md w-full '>
                         <div className='flex justify-between items-center mb-4 text-slate-800 '>
-                            <h2 className='text-xl font-bold capitalize'>Booking Details of {selectedHotel.hotel_name}</h2>
+                            <h2 className='text-2xl font-bold capitalize'>Booking Details of {selectedHotel.hotel_name}</h2>
                             <button 
                                 onClick={closeModal}
                                 className="text-gray-500 hover:text-gray-700"
