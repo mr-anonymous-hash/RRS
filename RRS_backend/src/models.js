@@ -102,56 +102,66 @@ const Hotel = sequelize.define('hotel', {
     }
   });
 
-const Reservation = sequelize.define('reservations', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  no_of_guests: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  table_size:{
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  selected_tables: {
-    type: DataTypes.JSON,
-    allowNull: false
-  },
-  reserved_tables: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  selected_food: {
-    type: DataTypes.STRING
-  },
-  reservation_time: {
-    type: DataTypes.TIME,
-    allowNull: false
-  },
-  status: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  hotelId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'hotels',
-      key: 'id'
+  const Reservation = sequelize.define('reservations', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    no_of_guests: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    table_size: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    selected_tables: {
+      type: DataTypes.JSON,
+      allowNull: false
+    },
+    reserved_tables: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    selected_food: {
+      type: DataTypes.STRING
+    },
+    reservation_date: {
+      type: DataTypes.DATE,
+      allowNull: false,  // Set to true if date might be absent
+      defaultValue: DataTypes.NOW,  // Use current date/time as default
+    },
+    reservation_start_time: {
+      type: DataTypes.TIME,
+      allowNull: false
+    },
+    reservation_end_time: {
+      type: DataTypes.TIME,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    hotelId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'hotels',
+        key: 'id'
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     }
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  }
-})
+  });
+  
 
 const FoodItems = sequelize.define('fooditems', {
   id: {
@@ -195,7 +205,7 @@ Reservation.belongsTo(Hotel, { foreignKey: 'hotelId' });
 User.hasMany(Reservation, { foreignKey: 'userId' });
 Reservation.belongsTo(User, { foreignKey: 'userId' });
 
-sequelize.sync().then(() => {
+sequelize.sync({alter:true}).then(() => {
   console.log('Database sync successfully')
 }).catch((error) => {
   console.log(`Database Connection Failed: ${error}`)
