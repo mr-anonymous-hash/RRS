@@ -8,7 +8,9 @@ const Tables = () => {
   const [hotelDetail, setHotelDetail] = useState(null);
   const [reservations, setReservations] = useState([]); // Changed to plural and initialized as an array
   const [bookingInfo, setBookingInfo] = useState({
-    reservationTime: '',
+    reservationDate: '',
+    reservationStartTime: '',
+    reservationEndTime: '',
     tableSize: '',
     guestCount: '',
   });
@@ -121,8 +123,16 @@ const Tables = () => {
   };
 
   const validateForm = () => {
-    if (!bookingInfo.reservationTime) {
-      setError('Please select a reservation time.');
+    if (!bookingInfo.reservationDate) {
+      setError('Please select a reservation Date.');
+      return false;
+    }
+    if (!bookingInfo.reservationStartTime) {
+      setError('Please select a reservation start time.');
+      return false;
+    }
+    if (!bookingInfo.reservationEndTime) {
+      setError('Please select a reservation end time.');
       return false;
     }
     if (!bookingInfo.tableSize) {
@@ -159,7 +169,9 @@ const Tables = () => {
         reserved_tables: selectedTables.length,
         table_size: parseInt(bookingInfo.tableSize),
         selected_food: selectedFood.map(food => food.id),
-        reservation_time: bookingInfo.reservationTime,
+        reservation_date: bookingInfo.reservationDate,
+        reservation_start_time: bookingInfo.reservationStartTime,
+        reservation_end_time: bookingInfo.reservationEndTime,
         status: 'pending',
         hotelId: hotelDetail.id,
         userId: userId,
@@ -195,13 +207,31 @@ const Tables = () => {
     <div className="mt-4 p-4 border rounded">
       <h3 className="text-xl mb-2 text-slate-800">Booking Information</h3>
       <div className='text-slate-800'>
+        <input 
+          type="date"
+          name='reservationDate'
+          value={bookingInfo.reservationDate || ''}
+          onChange={handleInputChange}
+          className="border p-2 mr-2 mb-2 w-full" />
+       <div className='flex '>
+       <input
+          type="time"
+          name="reservationStartTime"
+          placeholder='Start Time'
+          value={bookingInfo.reservationStartTime}
+          onChange={handleInputChange}
+          className="border p-2 mr-2 mb-2 w-full"
+        />  
         <input
-          type="datetime-local"
-          name="reservationTime"
-          value={bookingInfo.reservationTime}
+          type="time"
+          name="reservationEndTime"
+          placeholder='End Time'
+          value={bookingInfo.reservationEndTime}
           onChange={handleInputChange}
           className="border p-2 mr-2 mb-2 w-full"
         />
+       </div>
+
         <select
           name="tableSize"
           value={bookingInfo.tableSize}
@@ -297,12 +327,14 @@ const Tables = () => {
           <h3 className="text-xl  mb-2">Booking Confirmed</h3>
           <p>Hotel: {hotelDetail.hotel_name}</p>
           <p>Tables: {selectedTables.join(', ')}</p>
-          <p>Reservation Time: {bookingInfo.reservationTime}</p>
+          <p>Reservation Date:{bookingInfo.reservationDate}</p>
+          <p>Reservation Time: {bookingInfo.reservationStartTime} - {bookingInfo.reservationEndTime}</p>  
           <p>Table Size: {bookingInfo.tableSize} seater</p>
           <p>Guests: {bookingInfo.guestCount}</p>
           <p>Selected Food: {selectedFood.map(food => food.food_name).join(', ')}</p>
         </div>
       )}
+
     </div>
   );
 };

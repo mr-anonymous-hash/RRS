@@ -87,7 +87,7 @@ const Home = () => {
       </div>
       <div className="flex-1 p-10">
         <header className="bg-blue-500 text-white p-6 rounded-lg shadow-md mb-8 flex justify-center">
-          <h1 className="text-3xl font-bold capitalize">Welcome, {username}</h1>
+          <h1 className="text-4xl font-bold capitalize">Welcome, {username}</h1>
         </header>
         <div className="mb-6">
           <input
@@ -109,8 +109,8 @@ const Home = () => {
                   className="w-full h-48 object-cover" 
                 />
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2 capitalize">{hotel.hotel_name}</h2>
-                  <p className="text-gray-600 flex items-center capitalize">
+                  <h2 className="text-2xl font-semibold mb-2 capitalize">{hotel.hotel_name}</h2>
+                  <p className="text-gray-600 text-base flex items-center capitalize">
                     <MdLocationPin/>{hotel.location}
                   </p>
                 </div>
