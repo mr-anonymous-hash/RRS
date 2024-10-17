@@ -129,8 +129,8 @@ const Hotel = sequelize.define('hotel', {
     },
     reservation_date: {
       type: DataTypes.DATE,
-      allowNull: false,  // Set to true if date might be absent
-      defaultValue: DataTypes.NOW,  // Use current date/time as default
+      allowNull: false,  
+      defaultValue: DataTypes.NOW,  
     },
     reservation_start_time: {
       type: DataTypes.TIME,
@@ -205,7 +205,7 @@ Reservation.belongsTo(Hotel, { foreignKey: 'hotelId' });
 User.hasMany(Reservation, { foreignKey: 'userId' });
 Reservation.belongsTo(User, { foreignKey: 'userId' });
 
-sequelize.sync({alter:true}).then(() => {
+sequelize.sync().then(() => {
   console.log('Database sync successfully')
 }).catch((error) => {
   console.log(`Database Connection Failed: ${error}`)
