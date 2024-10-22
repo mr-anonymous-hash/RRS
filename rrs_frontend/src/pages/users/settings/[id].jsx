@@ -1,49 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './../../../app/globals.css';
 import SideNav from '../../../components/SideNav';
-import { IoArrowBackSharp } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 import Toast from '../../../components/Toast';
 
 const Settings = () => {
-  const [popupType, setPopupType] = useState(null);
+  const [modalType, setModalType] = useState(null);
   const [toast, setToast] = useState(false);
   const [message, setMessage] = useState('');
   const [userData, setUserData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-    email: ''
+    email: '',
+    phone: ''
   });
+  const [userDetails, setUserDetails] = useState([]);
   const router = useRouter();
-  const {id} = router.query
+  const { id } = router.query;
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
+    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (popupType === 'email') {
+    if (modalType === 'email') {
       await changeEmail();
-    } else if (popupType === 'password') {
+    } else if (modalType === 'password') {
       await changePassword();
+    } else if (modalType === 'phone') {
+      await changePhone();
     }
     closeModal();
   };
 
   const closeModal = () => {
-    setPopupType(null);
+    setModalType(null);
     setUserData({
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
-      email: ''
+      email: '',
+      phone: ''
     });
   };
 
@@ -105,123 +104,228 @@ const Settings = () => {
     }
   };
 
+  const changePhone = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`http://localhost:8000/api/users/phone/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phone: userData.phone
+        })
+      });
+
+      if (res.ok) {
+        setMessage('Phone number changed successfully');
+        setToast(true);
+      } else {
+        const errorData = await res.json();
+        setMessage(errorData.message || 'Unable to change phone number');
+        setToast(true);
+      }
+    } catch (error) {
+      setMessage('Unable to change phone number');
+      setToast(true);
+    }
+  };
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    try {
+      const res = await fetch(`http://localhost:8000/api/users/${user.user_id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUserDetails(data);
+      }
+    } catch (error) {
+      console.log(`Error While fetching user details ${error}`);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
-    <div className="flex">
+    <div className="min-h-screen bg-gray-50">
       <SideNav />
-      <div className="flex-1 p-6">
-        <div className="flex items-center">
-        <Toast
-          message={message}
-          isOpen={toast}/>
-          <IoArrowBackSharp size={24} className="cursor-pointer text-black" onClick={() => router.back()} />
-          <h1 className="text-xl font-bold ml-4 text-black">User Settings</h1>
-        </div>
-        
-        <div className="mt-6 flex flex-col gap-10">
-          <div>
-            <button
-              className="py-2 px-4 bg-slate-500 hover:bg-slate-300 hover:text-slate-500
-               text-white rounded-md"
-              onClick={() => setPopupType('email')}
-            >
-              Change Email
-            </button>
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md">
+          <div className="p-6 text-slate-800">
+            <h1 className="text-2xl font-bold mb-6">Profile</h1>
+            
+            <div className="flex items-center space-x-4 mb-8">
+              <img 
+                src={userDetails.avatar || `https://ui-avatars.com/api/?name=${userDetails.name}`}
+                alt="Profile" 
+                className="w-20 h-20 rounded-full object-cover border-2 border-gray-400"
+              />
+              <div>
+                <h2 className="text-xl font-semibold">{userDetails.name}</h2>
+                <p className="text-gray-600">Account Settings</p>
+              </div>
+            </div>
 
-          <div>
-            <button
-              className="py-2 px-4 bg-slate-500 hover:bg-slate-300 hover:text-slate-500
-               text-white rounded-md"
-              onClick={() => setPopupType('password')}
-            >
-              Change Password
-            </button>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Email Address</p>
+                  <p className="font-medium">{userDetails.email}</p>
+                </div>
+                <button 
+                  onClick={() => setModalType('email')}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                >
+                  Change
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Phone Number</p>
+                  <p className="font-medium">{userDetails.phone}</p>
+                </div>
+                <button 
+                  onClick={() => setModalType('phone')}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                >
+                  Change
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="text-sm text-gray-500">Password</p>
+                  <p className="font-medium">••••••••</p>
+                </div>
+                <button 
+                  onClick={() => setModalType('password')}
+                  className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-md"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {popupType && (
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-md shadow-md w-96">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">
-                {popupType === 'email' ? 'Change Email' : 'Change Password'}
+        {modalType && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6">
+              <h2 className="text-xl text-slate-800 font-semibold mb-4">
+                {modalType === 'email' ? 'Update Email' : 
+                 modalType === 'phone' ? 'Update Phone' : 
+                 'Change Password'}
               </h2>
 
-              <form onSubmit={handleSubmit}>
-                {popupType === 'email' && (
+              <form onSubmit={handleSubmit} className="space-y-4 text-gray-700 ">
+                {modalType === 'email' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">New Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      New Email Address
+                    </label>
                     <input
                       type="email"
                       name="email"
                       value={userData.email}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-                      focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
                 )}
 
-                {popupType === 'password' && (
+                {modalType === 'phone' && (
                   <div>
-                    <div className=''>
-                      <label className="block text-sm font-medium text-gray-700">Current Password</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      New Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={userData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                )}
+
+                {modalType === 'password' && (
+                  <>
+                    <div >
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Current Password
+                      </label>
                       <input
                         type="password"
                         name="currentPassword"
                         value={userData.currentPassword}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-slate-800 
-                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       />
                     </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700">New Password</label>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        New Password
+                      </label>
                       <input
                         type="password"
                         name="newPassword"
                         value={userData.newPassword}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-slate-800
-                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       />
                     </div>
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm New Password
+                      </label>
                       <input
                         type="password"
                         name="confirmPassword"
                         value={userData.confirmPassword}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-slate-800
-                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       />
                     </div>
-                  </div>
+                  </>
                 )}
 
-                <div className="mt-6 flex justify-end space-x-4">
+                <div className="flex justify-end space-x-2 mt-6">
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="py-2 px-4 bg-gray-300 text-black rounded-md"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="py-2 px-4 bg-indigo-600 text-white rounded-md"
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
                   >
-                    Save
+                    Save Changes
                   </button>
                 </div>
               </form>
             </div>
           </div>
         )}
+
+        <Toast message={message} isOpen={toast} />
       </div>
     </div>
   );

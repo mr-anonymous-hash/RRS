@@ -8,7 +8,8 @@ import { MdLogout, MdOutlineEventAvailable } from "react-icons/md";
 import { BiDish } from "react-icons/bi";
 import { IoRestaurantOutline } from "react-icons/io5";
 
-const SideNav = () => {
+const SideNav = ({Badge}) => {
+  const booking = Badge
   const router = useRouter();
   const [role, setRole] = useState('')
   const [userId, setUserId] = useState('') 
@@ -30,7 +31,7 @@ const SideNav = () => {
       <div className='flex justify-between'>
       <h1 className="text-4xl font-bold capitalize flex "> 
         {/* <BiDish/>  */}
-        <IoRestaurantOutline/>
+        <IoRestaurantOutline className='mr-2'/>
         TableTime</h1>
       
     <div className='flex justify-end'>
@@ -48,7 +49,18 @@ const SideNav = () => {
             className='cursor-pointer  p-2 rounded transition duration-200 flex items-center gap-1'
           >
             {/* <MdOutlineEventAvailable className='text-xl'/>  */}
-            <p>Bookings</p>
+            <div class="relative inline-block">
+              <p class="inline-block">
+                Bookings
+              </p>
+              {
+                booking > 0  ? 
+                (
+                <span class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-3/4 bg-blue-500 text-white text-xs font-semibold px-2.5 py-0.5 mb-2 rounded-full">
+                  {booking}   
+                </span> ) : (<></>)
+              }
+            </div>
           </a>
         )
       }

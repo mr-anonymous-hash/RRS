@@ -18,7 +18,6 @@ const Home = () => {
     }
     if(user){
       try{
-        setLoading(true)
         const userObject = JSON.parse(user)
         setUserName(userObject.name)
         if(userObject.role === false){
@@ -75,15 +74,17 @@ const Home = () => {
   );
 
   return (
-    <div className='flex'>
+    <div>
+      <SideNav/>
+      <div className='flex items-center justify-center'>
       <div>
-        <SideNav/>
-      </div>
-      <div>
-        <div className='bg-blue-500 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
-          <h1 className='font-extrabold text-2xl text-center py-20'>
+        <div className='bg-white h-48 min-w-[900px] mt-12  rounded-md shadow-gray-300 shadow-lg'>
+          <h1 className='font-extrabold text-3xl text-center pt-10 text-slate-800 '>
             Welcome, { username.toUpperCase() || 'Admin'}
           </h1>
+          <div>
+          <p className='text-slate-800 p-4'>We're glad to see you here! Let's manage your restaurant efficiently and provide a delightful dining experience to your guests.</p>
+          </div>
         </div>
 
         {/* Admin Dashboard Section */}
@@ -129,7 +130,7 @@ const Home = () => {
               <div
                 key={hotel.id}
                 onClick={() => router.push(`/admin/${hotel.id}`)} 
-                className='border p-4 rounded-md mb-4 bg-slate-500 text-white cursor-pointer shadow hover:bg-slate-300 hover:text-slate-500 capitalize'>
+                className='border p-4 rounded-md mb-4 hover:bg-slate-500 hover:text-white cursor-pointer shadow bg-slate-300 text-slate-500 capitalize'>
                 <h2 className='font-bold text-xl'>{hotel.hotel_name}</h2>
                 <p className='flex items-center capitalize'>
                   <MdLocationPin className='text-lg' /> {hotel.location}
@@ -139,6 +140,7 @@ const Home = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }

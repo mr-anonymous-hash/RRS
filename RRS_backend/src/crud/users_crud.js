@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 
 const getAllUsers = async() => await db_factory.getAllRecords(User)
 const getUserById = async(id) => await db_factory.getRecordById(User, id)
+
 const updateUserPassword = async(id, newPass) => {
     try{
         const salt = await bcrypt.genSalt(10) 

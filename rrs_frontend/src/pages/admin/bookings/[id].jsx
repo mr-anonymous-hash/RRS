@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import SideNav from '../../../components/SideNav';
 import './../../../app/globals.css';
 import { GrClose } from "react-icons/gr";
+import { FaRegCalendarAlt } from 'react-icons/fa';
+import { MdOutlineAccessTime } from 'react-icons/md';
 
 const Bookings = () => {
   const router = useRouter();
@@ -101,8 +103,9 @@ const Bookings = () => {
   }
 
   return (
-    <div className='flex'>
+    <div>
       <SideNav />
+    <div className='flex'>
       <div className="flex-1 p-8">
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {hotel && (
@@ -123,59 +126,93 @@ const Bookings = () => {
           ))}
         </div>
         {isModalOpen && selectedReservation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg max-w-md w-full">
-              <div className="flex justify-between items-center mb-4 text-slate-800">
-                <h2 className="text-xl font-bold">Reservation Details</h2>
-                <button 
-                  onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <GrClose />
-                </button>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          onClick={closeModal}
+      >
+
+          <div className="bg-gray-50 p-4 rounded-md shadow-md w-full max-w-md mx-auto">
+              <div className="mb-4">
+                  <p className="text-base text-gray-500">
+                      <strong>Booking ID:</strong> {selectedReservation.id}
+                  </p>
+                  <p className="text-base text-gray-500 capitalize">
+                      {/* <strong>Hotel Name:</strong> {selectedHotel.hotel_name} */}
+                  </p>
               </div>
-              <div className="text-slate-600">
-                <p><strong>Number of Guests:</strong> {selectedReservation.no_of_guests}</p>
-                <p><strong>Table Size:</strong> {selectedReservation.table_size} Seater</p>
-                <p><strong>Selected Tables:</strong> {selectedReservation.selected_tables}</p>
-                <p><strong>Reserved Tables:</strong> {selectedReservation.reserved_tables}</p>                
-                <p><strong>Reservation Time:</strong> {new Date('1970-01-01T' + selectedReservation.
-                reservation_time).toLocaleTimeString([],{hour:'2-digit', minute: '2-digit', hour12:true }
-                )}</p>
-                <p><strong>Status:</strong> {selectedReservation.status == 'pending' ? 'Booked' : <></> }</p>
-                <div>
-                <strong>Selected Food:</strong>
-                  <table className='min-w-full'>
-                    <thead className='bg-gray-100 '>
-                      <tr>
-                        <th className='p-2 text-left'>Food Item</th>
-                        <th className='p-2 text-left'>Price (₹)</th>
-                      </tr>
-                    </thead>
-                    <tbody className='border-b'>
-                      {
-                        foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
-                        .map((food) => (
-                          <tr key={food.id}>
-                            <td className='p-2'>{food.food_name}</td>
-                            <td className='p-2'>₹{food.price}</td>
+
+              <div className="flex items-center text-gray-500 mb-4">
+                  <FaRegCalendarAlt className="mr-2" />
+                  <span>{new Date(selectedReservation.reservation_date).
+                      toLocaleDateString([], {
+                          year: 'numeric', month: 'long', day: 'numeric'
+                      })}</span>
+                  <MdOutlineAccessTime className="ml-4 mr-2" />
+                  <span>{new Date('1970-01-01T' + selectedReservation.reservation_start_time).
+                      toLocaleTimeString([], {
+                          hour: '2-digit', minute: '2-digit', hour12: true
+                      }) + " - " +
+                      new Date('1970-01-01T' + selectedReservation.reservation_end_time).
+                          toLocaleTimeString([], {
+                              hour: '2-digit', minute: '2-digit', hour12: true
+                          })}</span>
+              </div>
+
+              <div className="mb-4">
+                  <div className="grid grid-cols-4 gap-2 mt-2 text-slate-600">
+                      {selectedReservation.selected_tables.split(',').map((table, index) => (
+                          <div key={index} className="p-2 border w-24 h-24 rounded-md 
+                      flex flex-col justify-between bg-green-600 text-white">
+                              <p className='text-lg font-bold'>#{table.trim()}</p>
+                              <p className="text-sm text-end">{selectedReservation.table_size} Seat</p>
+                          </div>
+                      ))}
+                  </div>
+              </div>
+
+              <div className='text-slate-500'>
+                  {/* <strong>Selected Food:</strong> */}
+                  <table className='min-w-full text-center'>
+                      <thead className='bg-blue-500 text-white'>
+                          <tr>
+                              <th className='p-2 '>Food Item</th>
+                              <th className='p-2 '>Price (₹)</th>
                           </tr>
-                        ))
-                      }
-                    </tbody>
+                      </thead>
+                      <tbody className='border-b'>
+                          {
+                              foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
+                                  .map((food) => (
+                                      <tr key={food.id}>
+                                          <td className='p-2'>{food.food_name}</td>
+                                          <td className='p-2'>₹{food.price}</td>
+                                      </tr>
+                                  ))
+                          }
+                      </tbody>
                   </table>
 
-                  <p className='p-2 text-right mr-24'><strong>Total :</strong> ₹{
-                    foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
-                    .reduce((total, food) => total + food.price, 0)
+                  <p className='p-2 text-right mr-14'><strong>Total :</strong> ₹{
+                      foodItems.filter(food => selectedReservation.selected_food.includes(food.id))
+                          .reduce((total, food) => total + food.price, 0)
                   }</p>
-
-                </div>
               </div>
-            </div>
+
+              {/* <div className="text-right">
+                  <button
+                      className="bg-blue-500 text-base rounded-md px-4 py-2 text-white font-semibold hover:bg-blue-400"
+                      onClick={()=>{
+                          setPopup(true)
+                          setSelectedId(selectedReservation.id)
+                      }}
+                  >
+                      Cancel booking
+                  </button>
+              </div> */}
           </div>
+      </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

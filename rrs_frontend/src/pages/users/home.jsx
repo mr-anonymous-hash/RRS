@@ -11,8 +11,9 @@ const Home = () => {
   const [allHotels, setAllHotels] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [booking, setBooking] = useState(0)
 
+  const router = useRouter()
   const fetchHotels = async() => {
     try {
       const token = localStorage.getItem('token')
@@ -37,6 +38,32 @@ const Home = () => {
       setLoading(false)
     }
   }
+
+  const fetchBookings = async() => {
+    try {
+      const token = localStorage.getItem('token')
+      const user = JSON.parse(localStorage.getItem('user'))
+      const res = await fetch(`http://localhost:8000/api/reservations/users/${user.user_id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setBooking(data)
+      } else {
+        throw new Error('Failed to fetch bookings')
+      }
+    } catch (error) {
+      console.log(`Error while Fetching Bookings: ${error}`)
+    }
+  }
+
+  useEffect(()=>{
+    fetchBookings()
+  },[])
 
    useEffect(() => {
     const user = localStorage.getItem('user')
@@ -83,24 +110,22 @@ const Home = () => {
 
   return (
     <div className="bg-gray-100">
-      <div className="bg-white shadow-md">
-        <SideNav/>
+      <div className="bg-white shadow-md sticky top-0">
+        <SideNav Badge={booking.length > 0 ? booking.length : null}/>
       </div>
       <div className="flex-1 p-10">
-        <header className=" text-slate-800 px-6 rounded-lg  mb-8 flex justify-center">
-          {/* <h1 className="text-4xl font-bold capitalize ">TableTime</h1> */}
-        </header>
-        <div className="mb-6 flex justify-center items-center border bg-white border-gray-200 shadow-sm text-black rounded-lg">
+        <div className="mb-6 flex justify-center items-center border-2 bg-white border-gray-300  shadow-sm text-black rounded-lg">
+          <div className='flex border-r-2 border-gray-300 pr-2'>
           <MdLocationPin className='text-gray-400 text-3xl ml-4' />
-          <select name="location" className='text-gray-400 px-0 border-r-2 border-gray-400 text-center w-60 bg-white' id="">
-            <option value="">Location</option>
+          {/* <select name="location" className='text-gray-400 px-0 border-r-2 border-gray-400 text-center max-w-48 bg-white' id="">
+            <option>Location</option>
             <option>Chinniyampalayam</option>
             <option>Gandhipuram</option>
             <option>Singanallur</option>
             <option>Ukkadam</option>
             <option>Sulur</option>
-          </select>
-          <IoSearchOutline className='flex items-center justify-center h-12 ml-3 bg-white text-gray-400 text-3xl'/>
+          </select> */}
+          </div>
           <input
             type="search"
             placeholder="Search hotels..."
@@ -108,8 +133,12 @@ const Home = () => {
             value={search}
             onChange={handleSearchChange}
           />
+          <button>
+            <IoSearchOutline className='flex items-center justify-center h-12 ml-3 mx-2 bg-white text-gray-400 
+            text-3xl'/>
+          </button>
         </div>
-        <div className='bg-white text-slate-400 p-8  rounded-md shadow-sm'>
+        <div className='bg-white text-slate-600 p-8  rounded-md shadow-sm'>
           <p>" Discover the best dining experiences at your fingertips! Our restaurant booking app
              allows you to effortlessly find and reserve tables at your favorite local eateries or 
              explore new culinary delights. Enjoy seamless reservations, personalized recommendations, 
@@ -119,7 +148,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-wh p-10 rounded-xl">
             {hotels.map((hotel, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 text-black"
-                onClick={() => router.push(`/users/hotel/${hotel.id}`)}>
+                onClick={() => router.push(`/users/table/${hotel.id}`)}>
                 <div className=''>
                 <img 
                   src={`http://localhost:8000/${hotel.image_path}`}

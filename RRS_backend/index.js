@@ -8,6 +8,7 @@ app.use(express.json())
 
 app.use('/api', require('./src/routes/'))
 app.use('/uploads', express.static('uploads'));
+app.use('/image', express.static('images'));
 
 
 app.listen(port, console.log(`Listening on http://localhost:${port}`))

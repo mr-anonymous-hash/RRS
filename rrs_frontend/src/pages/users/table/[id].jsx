@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './../../../app/globals.css';
 import { useRouter } from 'next/router';
-import { MdOutlineArrowBack } from 'react-icons/md';
+import { MdAccessTime, MdLocationPin, MdOutlineArrowBack } from 'react-icons/md';
 import FoodSelection from './../../../components/FoodSelection';
+import SideNav from '../../../components/SideNav';
 
 const Tables = () => {
   const [hotelDetail, setHotelDetail] = useState(null);
@@ -190,6 +191,9 @@ const Tables = () => {
         const result = await response.json();
         console.log('Reservation created:', result);
         setBookingConfirmed(true);
+        setTimeout(() => {
+          router.push(`/users/home`)
+        }, 1500);
         fetchReservations(); // Refresh reservations after booking
       } else {
         const errorData = await response.json();
@@ -204,8 +208,15 @@ const Tables = () => {
   };
 
   const renderBookingForm = () => (
-    <div className="mt-4 p-4 border rounded">
-      <h3 className="text-xl mb-2 text-slate-800">Booking Information</h3>
+    <div className='flex justify-between mt-6'>
+      <div className='min-w-[600px] rounded shadow-md'
+      style={{backgroundImage: `url(http://localhost:8000/${hotelDetail?.image_path})`, 
+      backgroundSize: 'cover', 
+      backgroundPosition: 'center', 
+      backgroundRepeat: 'no-repeat'}}
+      ></div>
+      <div className="mt-0 p-4 border min-w-[500px] rounded">
+      <h3 className="text-xl mb-2 text-slate-800">Book Table</h3>
       <div className='text-slate-800'>
         <input 
           type="date"
@@ -213,7 +224,7 @@ const Tables = () => {
           value={bookingInfo.reservationDate || ''}
           onChange={handleInputChange}
           className="border p-2 mr-2 mb-2 w-full" />
-       <div className='flex '>
+       <div className='flex justify-between'>
        <input
           type="time"
           name="reservationStartTime"
@@ -228,7 +239,7 @@ const Tables = () => {
           placeholder='End Time'
           value={bookingInfo.reservationEndTime}
           onChange={handleInputChange}
-          className="border p-2 mr-2 mb-2 w-full"
+          className="border p-2  mb-2 w-full"
         />
        </div>
 
@@ -253,6 +264,8 @@ const Tables = () => {
         />
       </div>
     </div>
+    </div>
+
   );
 
   const renderTables = () => (
@@ -283,24 +296,47 @@ const Tables = () => {
   );
 
   return (
-    <div className="bg-white m-20">
+    
+    <div className="bg-white m-10">
+      
       <div className="flex items-center justify-start space-x-2">
-        <span className="rounded-full bg-slate-400 ">
+        <span className="rounded-full bg-slate-400 text-2xl">
           <MdOutlineArrowBack
             className="text-black rounded-full text-xl cursor-pointer"
             onClick={() => router.back()}
           />
         </span>
-        <h2 className="text-2xl font-bold text-slate-800 capitalize">
+        {/* <h2 className="text-2xl font-bold text-slate-800 capitalize">
           {hotelDetail?.hotel_name || 'Table Booking'}
-        </h2>
+        </h2> */}
       </div>
 
       {renderBookingForm()}
-
+      
+      <div className='mt-4'>
+      <h1 className="text-3xl font-bold text-slate-800 capitalize">
+          {hotelDetail?.hotel_name || 'Table Booking'}
+        </h1>
+        <div className='w-[750px] mt-2'>
+        <p className='text-base text-slate-500'>{hotelDetail?.hotel_description}</p>
+        <div className=' flex justify-between items-center '>
+        <p className='text-slate-500 p-2 flex items-center capitalize'>
+                  <MdLocationPin className='text-slate-800' />{hotelDetail?.location}
+                </p>
+                <div className='px-4 flex justify-between items-center'>
+                  <div className='flex gap-2 items-center text-slate-500'>
+                    <MdAccessTime className='text-slate-800'/>
+                    <p >{new Date(`1970-01-01T${hotelDetail?.opening_time}`).toLocaleTimeString([],
+                      { hour: '2-digit', minute: '2-digit', hour12: true })} - {new Date(`1970-01-01T${hotelDetail?.closing_time}`).toLocaleTimeString([],
+                        { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                  </div>
+                </div>
+        </div>
+        </div>
+      </div>
       {bookingInfo.tableSize && (
-        <>
-          <h3 className="text-xl mb-2 text-black">Select Tables ({bookingInfo.tableSize} seater)</h3>
+        <div className='mt-8'>
+          <h3 className="text-2xl mb-2 font-bold text-slate-800">Choose Your Table </h3>
           {renderTables()}
           <FoodSelection 
             hotelId={router.query.id} 
@@ -313,7 +349,7 @@ const Tables = () => {
           >
             {isLoading ? 'Confirming...' : 'Confirm Booking'}
           </button>
-        </>
+        </div>
       )}
 
       {error && (
@@ -323,18 +359,16 @@ const Tables = () => {
       )}
 
       {bookingConfirmed && (
-        <div className="mt-4 p-4 border rounded bg-green-100 text-green-700">
-          <h3 className="text-xl  mb-2">Booking Confirmed</h3>
-          <p>Hotel: {hotelDetail.hotel_name}</p>
-          <p>Tables: {selectedTables.join(', ')}</p>
-          <p>Reservation Date:{bookingInfo.reservationDate}</p>
-          <p>Reservation Time: {bookingInfo.reservationStartTime} - {bookingInfo.reservationEndTime}</p>  
-          <p>Table Size: {bookingInfo.tableSize} seater</p>
-          <p>Guests: {bookingInfo.guestCount}</p>
-          <p>Selected Food: {selectedFood.map(food => food.food_name).join(', ')}</p>
-        </div>
+         <div className='fixed inset-0 bg-black bg-opacity-55 min-w-screen max-h-screen'>
+         <div className='flex justify-center m-[250px]'>
+         <div className="mt-4 p-4 border rounded w-[380px] flex justify-center items-center min-h-40  bg-white text-green-700">
+             <h3 className="text-xl  font-extrabold mb-2">Booking Confirmed</h3>
+           </div>
+         </div>
+         </div>
       )}
 
+     
     </div>
   );
 };

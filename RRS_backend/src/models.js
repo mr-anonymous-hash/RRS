@@ -102,6 +102,38 @@ const Hotel = sequelize.define('hotel', {
     }
   });
 
+  const Review = sequelize.define('reviews', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    rating: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    comment: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    hotelId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'hotels',
+        key: 'id'
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    }
+  });
+
   const Reservation = sequelize.define('reservations', {
     id: {
       type: DataTypes.INTEGER,
@@ -204,6 +236,10 @@ Hotel.hasMany(Reservation, { foreignKey: 'hotelId' });
 Reservation.belongsTo(Hotel, { foreignKey: 'hotelId' });
 User.hasMany(Reservation, { foreignKey: 'userId' });
 Reservation.belongsTo(User, { foreignKey: 'userId' });
+Hotel.hasMany(Review, { foreignKey: 'hotelId' });
+Review.belongsTo(Hotel, { foreignKey: 'hotelId' });
+User.hasMany(Review, { foreignKey: 'userId' });
+Review.belongsTo(User, { foreignKey: 'userId' });
 
 sequelize.sync().then(() => {
   console.log('Database sync successfully')

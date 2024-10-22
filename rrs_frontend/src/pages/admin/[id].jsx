@@ -1,82 +1,102 @@
-import React, { useEffect, useState } from 'react'
-import SideNav from '../../components/SideNav'
-import { MdLocationPin } from "react-icons/md";
-import { MdOutlineRamenDining } from "react-icons/md";
+import React, { useEffect, useState } from 'react';
+import './../../app/globals.css'
+import { LuLoader2 } from "react-icons/lu";
+import { FaLocationDot } from "react-icons/fa6";
 import { GiWoodenChair } from "react-icons/gi";
-import { useRouter } from 'next/router'
+import { LiaUtensilsSolid } from "react-icons/lia";
+import { useRouter } from 'next/router';
 
-const Hotel = () => {
+const RestaurantAdmin = () => {
+  const [restaurant, setRestaurant] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter()
-  const [hotel, setHotel] = useState(null)
-  const [error, setError] = useState(null)
 
-  const fetchHotel = async (id) => {
-    const token = localStorage.getItem('token')
+  const fetchRestaurant = async (id) => {
+    const token = localStorage.getItem('token');
     try {
       const res = await fetch(`http://localhost:8000/api/hotels/${id}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      if (!res.ok) {
-        throw new Error(`Failed to fetch hotel: ${res.status} ${res.statusText}`);
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json()
+        console.log(data)
+        setRestaurant(data);
+      } else {
+        throw new Error('Failed to fetch restaurant details');
       }
-      const data = await res.json();
-      setHotel(data)
     } catch (error) {
-      console.error(`Error fetching hotel: ${error}`)
-      setError(`Error fetching hotel: ${error.message}`)
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    if (router.isReady && router.query.id) {
-      fetchHotel(router.query.id)
+    if (router.query.id) {
+      fetchRestaurant(router.query.id);
     }
-  }, [router.isReady, router.query.id])
+  }, [router.query.id]);
 
-  if (error) {
-    return <div className="text-red-500 text-center mt-10">{error}</div>
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LuLoader2 className="h-8 w-8 animate-spin text-slate-600" />
+      </div>
+    );
   }
 
-  if (!hotel) {
-    return <div className="text-center mt-10">Loading...</div>
+  console.log(restaurant)
+
+  if (error) {
+    return (
+      <div className="mx-auto mt-8 max-w-2xl rounded-lg bg-red-50 p-4 text-red-700">
+        {error}
+      </div>
+    );
   }
 
   return (
-    <div className='flex'>
-      <div>
-        <SideNav />
-      </div>
-      <div>
-        <div className='bg-blue-500 h-48 min-w-[900px] mt-12 ml-40 mr-40 rounded-md shadow-gray-300 shadow-lg'>
-          <h1 className='font-extrabold text-2xl text-center text-white p-4 capitalize'>
-            {hotel.hotel_name}
+    <div className="min-h-screen bg-slate-100 p-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
+          <h1 className="mb-6 text-center text-3xl font-bold text-slate-800 capitalize">
+            {restaurant?.hotel_name }
           </h1>
-          <p className='text-white px-4'>{hotel.hotel_description}</p>
-          <p className='text-white p-4 flex items-center capitalize'>
-            <MdLocationPin />{hotel.location}
+          <div className="mb-6 max-w-lg mx-auto aspect-video overflow-hidden rounded-lg">
+            <img
+              src={`http://localhost:8000/${restaurant?.image_path}`}
+              alt={restaurant?.hotel_name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <p className="mb-4 text-slate-600 leading-relaxed">
+            {restaurant?.hotel_description}
           </p>
+          <div className="flex items-center gap-2 text-slate-600">
+            <FaLocationDot className="h-5 w-5" />
+            <span className="capitalize">{restaurant?.location}</span>
+          </div>
         </div>
-        <div className='w-full flex justify-center gap-10 mt-16'>
-          <button className='border bg-slate-500 w-48 h-28 rounded-md hover:bg-slate-300
-          hover:text-slate-500 flex items-center justify-center'
-          onClick={()=> router.push(`/admin/bookings/${hotel.id}`)}>
-          <GiWoodenChair className=' text-4xl'/>
+        <div className="grid gap-6 md:grid-cols-2">
+          <button className="group rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md">
+            <div className="flex flex-col items-center text-slate-700 gap-4"
+            onClick={()=>router.push(`/admin/bookings/${restaurant?.id}`)}>
+              <GiWoodenChair className="h-12 w-12  transition-colors group-hover:text-blue-600" />
+              <h3 className="text-xl font-semibold group-hover:text-blue-600">Manage Bookings</h3>
+            </div>
           </button>
-          <button 
-            className='border bg-slate-500 w-48 h-28 rounded-md hover:bg-slate-300 
-            hover:text-slate-500 flex items-center justify-center'
-            onClick={() => router.push(`/foodItems/${hotel.id}`)}
-          >
-            <MdOutlineRamenDining className=' text-4xl'/>
+          <button className="group rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md">
+            <div className="flex flex-col items-center text-slate-700 gap-4">
+              <LiaUtensilsSolid className="h-12 w-12 text-slate-700 transition-colors group-hover:text-blue-600" />
+              <h3 className="text-xl font-semibold group-hover:text-blue-600">Manage Menu</h3>
+            </div>
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Hotel
+export default RestaurantAdmin;
