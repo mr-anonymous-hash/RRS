@@ -3,6 +3,7 @@ import './../../../app/globals.css';
 import { useRouter } from 'next/router';
 import { MdAccessTime, MdLocationPin, MdOutlineArrowBack } from 'react-icons/md';
 import FoodSelection from './../../../components/FoodSelection';
+import { FaStar } from "react-icons/fa";
 import SideNav from '../../../components/SideNav';
 
 const Tables = () => {
@@ -21,6 +22,7 @@ const Tables = () => {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [reviewPopup, setReviewPopup] = useState(false) 
 
   const router = useRouter();
 
@@ -296,79 +298,262 @@ const Tables = () => {
   );
 
   return (
-    
-    <div className="bg-white m-10">
-      
-      <div className="flex items-center justify-start space-x-2">
+    <div className="min-h-screen bg-slate-50 p-8">
+      {/* Back Button */}
+      <div className="flex items-center justify-start space-x-2 mb-6">
         <span className="rounded-full bg-slate-400 text-2xl">
           <MdOutlineArrowBack
             className="text-black rounded-full text-xl cursor-pointer"
             onClick={() => router.back()}
           />
         </span>
-        {/* <h2 className="text-2xl font-bold text-slate-800 capitalize">
-          {hotelDetail?.hotel_name || 'Table Booking'}
-        </h2> */}
       </div>
 
-      {renderBookingForm()}
-      
-      <div className='mt-4'>
-      <h1 className="text-3xl font-bold text-slate-800 capitalize">
-          {hotelDetail?.hotel_name || 'Table Booking'}
-        </h1>
-        <div className='w-[750px] mt-2'>
-        <p className='text-base text-slate-500'>{hotelDetail?.hotel_description}</p>
-        <div className=' flex justify-between items-center '>
-        <p className='text-slate-500 p-2 flex items-center capitalize'>
-                  <MdLocationPin className='text-slate-800' />{hotelDetail?.location}
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column - Hotel Details */}
+        <div className="bg-white rounded-lg shadow-md">
+          <div className="p-6">
+            {/* Hotel Image */}
+            <div 
+              className="w-full h-64 rounded-lg mb-6 bg-cover bg-center"
+              style={{
+                backgroundImage: hotelDetail?.image_path 
+                  ? `url(http://localhost:8000/${hotelDetail.image_path})`
+                  : 'none'
+              }}
+            />
+            
+            {/* Hotel Info */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-800 capitalize">
+                  {hotelDetail?.hotel_name || 'Loading...'}
+                </h1>
+                <span className="bg-slate-800 text-white px-3 py-1 rounded-full text-sm">
+                  ★ 4.1
+                </span>
+              </div>
+
+              <p className="text-slate-600">
+                {hotelDetail?.hotel_description || 'Loading description...'}
+              </p>
+
+              <div className="flex flex-wrap gap-4 text-slate-600">
+                <p className="flex items-center gap-2 text-slate-500">
+                  <MdLocationPin className="text-slate-800" />
+                  <span>{hotelDetail?.location || 'Loading location...'}</span>
                 </p>
-                <div className='px-4 flex justify-between items-center'>
-                  <div className='flex gap-2 items-center text-slate-500'>
-                    <MdAccessTime className='text-slate-800'/>
-                    <p >{new Date(`1970-01-01T${hotelDetail?.opening_time}`).toLocaleTimeString([],
-                      { hour: '2-digit', minute: '2-digit', hour12: true })} - {new Date(`1970-01-01T${hotelDetail?.closing_time}`).toLocaleTimeString([],
-                        { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
-                  </div>
+                <div className="flex items-center gap-2 text-slate-500">
+                  <MdAccessTime className="text-slate-800" />
+                  <span>
+                    {hotelDetail ? (
+                      `${new Date(`1970-01-01T${hotelDetail.opening_time}`).toLocaleTimeString([], 
+                        { hour: '2-digit', minute: '2-digit', hour12: true })} - 
+                       ${new Date(`1970-01-01T${hotelDetail.closing_time}`).toLocaleTimeString([], 
+                        { hour: '2-digit', minute: '2-digit', hour12: true })}`
+                    ) : 'Loading hours...'}
+                  </span>
                 </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Right Column - Booking Form */}
+        <div className="bg-white rounded-lg shadow-md p-6 text-slate-500">
+          <h2 className="text-xl font-bold text-slate-800 mb-4">Book Your Table</h2>
+          
+          <div className="space-y-4">
+            {/* Date Selection */}
+            <input 
+              type="date"
+              name="reservationDate"
+              value={bookingInfo.reservationDate || ''}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+
+            {/* Time Selection Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="time"
+                name="reservationStartTime"
+                value={bookingInfo.reservationStartTime}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <input
+                type="time"
+                name="reservationEndTime"
+                value={bookingInfo.reservationEndTime}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Table Size and Guest Count */}
+            <select
+              name="tableSize"
+              value={bookingInfo.tableSize}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select table size</option>
+              {hotelDetail?.table_config.map((config, index) => (
+                <option key={index} value={config.seats}>{config.seats} seater</option>
+              ))}
+            </select>
+
+            <input
+              type="number"
+              name="guestCount"
+              value={bookingInfo.guestCount}
+              onChange={handleInputChange}
+              placeholder="Number of guests"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
         </div>
       </div>
+     
+      <div className=' w-full min-h-40 mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 bg-white rounded-md'>
+          <div className=' grid grid-cols-1 lg:grid-cols-2 border'>
+              <div className='border p-4 '>
+                <button className='flex items-center p-2 bg-lime-400 rounded-md'>
+                4.1 <FaStar/>
+                </button>
+                <p className='text-slate-800 mt-2 text-bs'>45 Votes</p>
+                <p className='text-slate-800 mt-1 text-sm'>10 reviews</p>
+              </div>
+              <div className='border p-4 flex  justify-center items-center'>
+                <div>
+                <div className='flex gap-2 p-4 text-xl' onClick={()=>setReviewPopup(true)}>
+                  <FaStar className='border w-6 h-6 p-1 cursor-pointer'/>
+                  <FaStar className='border w-6 h-6 p-1 cursor-pointer'/>
+                  <FaStar className='border w-6 h-6 p-1 cursor-pointer'/>
+                  <FaStar className='border w-6 h-6 p-1 cursor-pointer'/>
+                  <FaStar className='border w-6 h-6 p-1 cursor-pointer'/>
+                </div>
+                <p className='text-slate-800 text-md ml-10'>Rate This Place</p>
+                </div>
+              </div>
+          </div>
+          <div className='bg-white'>
+          </div>
+      </div>
+
+      
+      {/* Table Selection Section */}
       {bookingInfo.tableSize && (
-        <div className='mt-8'>
-          <h3 className="text-2xl mb-2 font-bold text-slate-800">Choose Your Table </h3>
-          {renderTables()}
-          <FoodSelection 
-            hotelId={router.query.id} 
-            onFoodSelect={handleFoodSelection}
-          />
-          <button
-            onClick={handleBooking}
-            className="mt-4 bg-blue-500 text-white px-4 py-2 font-bold rounded w-full"
-            disabled={isLoading || selectedTables.length === 0}
-          >
-            {isLoading ? 'Confirming...' : 'Confirm Booking'}
-          </button>
+        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-2xl mb-4 font-bold text-slate-800">Choose Your Table</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {availableTables.map((tableNumber) => {
+              const isBooked = isTableBooked(tableNumber);
+              return (
+                <div
+                  key={tableNumber}
+                  onClick={() => !isBooked && handleTableSelection(tableNumber)}
+                  className={`
+                    relative w-40 h-40 p-4 rounded-lg border-2 transition-all bor 
+                    ${isBooked ? 'bg-red-50 border-red-200 cursor-not-allowed' : 'bg-white hover:border-blue-400 cursor-pointer'}
+                    ${selectedTables.includes(tableNumber) ? 'border-blue-500 bg-blue-50' : 'border-slate-200'}
+                  `}
+                >
+                  <div className="text-lg font-semibold mb-2">#{tableNumber}</div>
+                  <div className="flex flex-wrap gap-2  justify-center">
+                    {Array.from({ length: parseInt(bookingInfo.tableSize) }, (_, i) => (
+                      <div 
+                        key={i} 
+                        className="w-4 h-4 rounded-full bg-slate-300"
+                      />
+                    ))}
+                  </div>
+                  {isBooked && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-red-100 bg-opacity-90 rounded-lg">
+                      <span className="font-semibold text-red-600">Booked</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Food Selection and Booking Button */}
+          <div className="mt-6">
+            <FoodSelection 
+              hotelId={router.query.id} 
+              onFoodSelect={handleFoodSelection}
+            />
+            <button
+              onClick={handleBooking}
+              disabled={isLoading || selectedTables.length === 0}
+              className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Confirming...' : 'Confirm Booking'}
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Error Message */}
       {error && (
-        <div className="mt-4 p-4 border rounded bg-red-100 text-red-700">
+        <div className="mt-4 p-4 border rounded-lg bg-red-50 text-red-600">
           {error}
         </div>
       )}
 
+      {/* Booking Confirmation Modal */}
       {bookingConfirmed && (
-         <div className='fixed inset-0 bg-black bg-opacity-55 min-w-screen max-h-screen'>
-         <div className='flex justify-center m-[250px]'>
-         <div className="mt-4 p-4 border rounded w-[380px] flex justify-center items-center min-h-40  bg-white text-green-700">
-             <h3 className="text-xl  font-extrabold mb-2">Booking Confirmed</h3>
-           </div>
-         </div>
-         </div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-96 text-center">
+            <h3 className="text-xl font-bold text-green-600">Booking Confirmed</h3>
+          </div>
+        </div>
       )}
 
-     
+      {
+        reviewPopup === true && (
+          <div className='fixed inset-0 bg-black bg-opacity-55 flex justify-center items-center min-w-screen min-h-full'>
+      <div className='min-w-[650px] min-h-[400px] bg-white rounded-lg relative'>
+        {/* Close Button */}
+        <button 
+          onClick={()=>{setReviewPopup(false)}} 
+          className="absolute top-3 right-3 text-xl font-bold text-gray-500 hover:text-gray-700 transition-colors"
+        >
+          X
+        </button>
+        
+        {/* Star Rating Section */}
+        <div className='flex flex-col items-center justify-center pt-8'>
+          <h2 className="text-2xl font-bold text-slate-800 mb-4">Rate Your Experience</h2>
+          <div className='flex gap-2 mb-6'>
+            <FaStar className='text-2xl w-10 h-10 p-1 cursor-pointer hover:text-yellow-400 transition-colors'/>
+            <FaStar className='text-2xl w-10 h-10 p-1 cursor-pointer hover:text-yellow-400 transition-colors'/>
+            <FaStar className='text-2xl w-10 h-10 p-1 cursor-pointer hover:text-yellow-400 transition-colors'/>
+            <FaStar className='text-2xl w-10 h-10 p-1 cursor-pointer hover:text-yellow-400 transition-colors'/>
+            <FaStar className='text-2xl w-10 h-10 p-1 cursor-pointer hover:text-yellow-400 transition-colors'/>
+          </div>
+
+          {/* Comment Section */}
+          <div className="w-4/5 mb-6">
+            <textarea
+              placeholder="Share your experience with us..."
+              className="w-full h-40 p-4 border text-slate-700 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold transition-colors">
+            Submit Review
+          </button>
+        </div>
+      </div>
+    </div>
+        )
+      }
     </div>
   );
 };
