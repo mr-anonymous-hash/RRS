@@ -78,7 +78,7 @@ const Home = () => {
       <SideNav/>
       <div className='flex items-center justify-center'>
       <div>
-        <div className='bg-white h-48 min-w-[900px] mt-12  rounded-md shadow-gray-300 shadow-lg'>
+        <div className='bg-white h-48 min-w-[900px] mt-12  rounded-md'>
           <h1 className='font-extrabold text-3xl text-center pt-10 text-slate-800 '>
             Welcome, { username.toUpperCase() || 'Admin'}
           </h1>

@@ -64,13 +64,13 @@ const RestaurantAdmin = () => {
           <h1 className="mb-6 text-center text-3xl font-bold text-slate-800 capitalize">
             {restaurant?.hotel_name }
           </h1>
-          <div className="mb-6 max-w-lg mx-auto aspect-video overflow-hidden rounded-lg">
+          {/* <div className="mb-6 max-w-lg mx-auto aspect-video overflow-hidden rounded-lg">
             <img
               src={`http://localhost:8000/${restaurant?.image_path}`}
               alt={restaurant?.hotel_name}
               className="h-full w-full object-cover"
             />
-          </div>
+          </div> */}
           <p className="mb-4 text-slate-600 leading-relaxed">
             {restaurant?.hotel_description}
           </p>

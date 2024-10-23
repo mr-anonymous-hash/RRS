@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation'
 const settings = () => {
   const router = useRouter()
   return (
-    <div className='flex'>
+    <div>
       <div>
         <SideNav />
       </div>
+      <div className='flex'>
       <div>
       <div className='text-white text-center bg-slate-500 
         ml-10 mt-10 rounded-lg min-h-28 min-w-60 cursor-pointer
@@ -24,6 +25,7 @@ const settings = () => {
           <p className='text-xl'>Update Hotels</p>  
         </div>
       </div>
+    </div>
     </div>
   )
 }
