@@ -1,7 +1,10 @@
-const router = require('express').Route()
+const router = require('express').Router()
+const review_controller = require('./../controllers/review_controller')
 
-router.get('/', (req, res) => {
-    res.send('Hello World')
-})
 
-router.get('/:id',review_controller.getReviewById)
+
+router.get('/hotel/:id',review_controller.getReviewByHotelId)
+
+router.post('/', review_controller.createReview)
+
+module.exports = router

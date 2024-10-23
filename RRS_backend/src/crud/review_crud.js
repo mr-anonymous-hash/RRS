@@ -11,7 +11,9 @@ const getReviewById = async (id) => {
 
 const getReviewByHotelId = async (id) => {
     try {
-        const review = await Review.findById(id)
+        const review = await Review.findAll({where:{
+            hotelId : id
+        }})
         return review
     } catch (error) {
         console.log(`error while fetching review by hotel id: ${error.message}`)
@@ -19,6 +21,7 @@ const getReviewByHotelId = async (id) => {
 }
 
 const createReview = async (review) => {
+    console.log(review)
     try {
         const newReview = await Review.create(review)
         return newReview

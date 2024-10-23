@@ -247,4 +247,4 @@ sequelize.sync().then(() => {
   console.log(`Database Connection Failed: ${error}`)
 })
 
-module.exports = { User, Hotel, Reservation, FoodItems }
+module.exports = { User, Hotel, Reservation, FoodItems,Review}

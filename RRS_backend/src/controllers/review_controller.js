@@ -12,7 +12,9 @@ const getReviewById = async(req, res) => {
     }
 }
 
+ 
 const getReviewByHotelId = async(req, res) => {
+    console.log(req.params.id)
     try {
         const review = await review_crud.getReviewByHotelId(req.params.id);
         if (!review) {
@@ -28,6 +30,7 @@ const createReview = async(req, res) => {
 
     const {rating,comment,hotelId,userId} = req.body
     const data = {rating,comment,hotelId,userId}
+    console.log(data)
 
     try {
         const newReview = await review_crud.createReview(data);
