@@ -446,8 +446,8 @@ const Tables = () => {
                 <h1 className="text-3xl font-bold text-slate-800 capitalize">
                   {hotelDetail?.hotel_name || 'Loading...'}
                 </h1>
-                <span className="bg-slate-800 text-white px-3 py-1 rounded-full text-sm">
-                  {calculateRating(reviews)}
+                <span className="bg-slate-800 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                  {calculateRating(reviews)}<FaStar/>
                 </span>
               </div>
 
@@ -456,12 +456,12 @@ const Tables = () => {
               </p>
 
               <div className="flex flex-wrap gap-4 text-slate-600">
-                <p className="flex items-center gap-2 text-slate-500">
-                  <MdLocationPin className="text-slate-800" />
-                  <span>{hotelDetail?.location || 'Loading location...'}</span>
+                <p className="flex items-center gap-2 text-slate-500 capitalize">
+                  <MdLocationPin className="text-slate-800 text-lg" />
+                  <span >{hotelDetail?.location || 'Loading location...'}</span>
                 </p>
                 <div className="flex items-center gap-2 text-slate-500">
-                  <MdAccessTime className="text-slate-800" />
+                  <MdAccessTime className="text-slate-800 text-lg" />
                   <span>
                     {hotelDetail ? (
                       `${new Date(`1970-01-01T${hotelDetail.opening_time}`).toLocaleTimeString([], 
@@ -482,7 +482,7 @@ const Tables = () => {
             {/* Rating Summary */}
             <div className="grid grid-cols-2 gap-4 mb-6 border-b pb-6">
               <div>
-                <button className="flex items-center p-2 bg-lime-400 rounded-md">
+                <button className="flex items-center p-2 bg-lime-400 rounded-md gap-1 font-semibold">
                   {calculateRating(reviews)} <FaStar/>
                 </button>
                 <p className="text-slate-800 mt-2">{reviews.length} Votes</p>
@@ -511,7 +511,7 @@ const Tables = () => {
               {reviews.map((review) => (
                 <div key={review.id} className="border-b pb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="flex">
+                    <div className="flex gap-1">
                       {[...Array(review.rating)].map((_, index) => (
                         <FaStar key={index} className="text-yellow-400 w-4 h-4" />
                       ))}
