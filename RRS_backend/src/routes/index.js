@@ -12,12 +12,15 @@ const verifyToken = require('./../utils/middleware')
 
 router.use('/signup', auth_controller.signup )
 router.use('/login', auth_controller.login)
+router.post('/forgot-password', auth_controller.token)
+router.patch('/reset-password/:token', auth_controller.resetPassword)
 router.use('/users',  users_route)
 router.use('/admin', verifyToken, admin_route)
 router.use('/hotels', verifyToken, hotels_route)
 router.use('/reviews', review_route)
 router.use('/reservations', verifyToken, reservations_route)
 router.use('/fooditems', verifyToken, fooditems_route)
+
 
 
 module.exports = router

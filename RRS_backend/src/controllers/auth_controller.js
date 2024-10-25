@@ -1,6 +1,7 @@
 const auth_curd = require('./../crud/auth_curd')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 
 const signup = async (req, res) => {
     const { name, email, phone, password, role } = req.body
@@ -37,5 +38,69 @@ const login = async (req, res) => {
     }
 }
 
+const token = async (req, res) => {
+    const { email } = req.body
+    const user = await auth_curd.reset(email)
+    if (user) {
+        if(user.email === email){
+            function generateToken(){
+                const token = jwt.sign({email}, process.env.SECRET_KEY, {expiresIn: '1h'})
+                return token
+            }
 
-module.exports = { login, signup }
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.MAIL,
+                    pass: process.env.PASSWORD
+                }
+            })
+
+            function sendEmail(email,token){
+                const resetLink = `http://localhost:3000/reset-password/${token}`
+                const mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Reset Password',
+                    html: `<p>You requested a password reset. Click the link below to reset your password:</p>
+                            <a href="${resetLink}">Reset Password</a>`
+                }
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if(error){
+                        console.log(error)
+                    }else{
+                        console.log('Email sent: ' + info.response)
+                    }
+                })
+            }
+            const token = generateToken(email)
+            sendEmail(email,token)
+            res.send('Email sent successfully')
+        }
+        else{res.status(400).send('Unable to send email')}    
+    } else {
+        res.status(400).send('Unable to reset password')
+    }
+}
+
+const resetPassword = async(req, res)=>{
+    const {token} = req.params
+    const {password, confirmPass} = req.body
+    if(password !== confirmPass) res.send('Password does not match')
+    try{
+        const decoded = jwt.verify(token, process.env.SECRET_KEY)
+        const email = decoded.email
+        const hashPass = await bcrypt.hash(password, 10)
+        const user = await auth_curd.resetPass(email, hashPass)
+        if(user){
+            res.send('Password reset successfully')
+        }else{
+            res.status(400).send('Unable to reset password')
+        }
+    }catch(error){
+        res.status(400).send('Invalid or expired token')
+    }
+}
+
+module.exports = { login, signup, token, resetPassword }
