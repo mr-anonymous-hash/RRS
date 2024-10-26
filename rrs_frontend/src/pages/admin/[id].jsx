@@ -5,6 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { GiWoodenChair } from "react-icons/gi";
 import { LiaUtensilsSolid } from "react-icons/lia";
 import { useRouter } from 'next/router';
+import SideNav from '../../components/SideNav';
 
 const RestaurantAdmin = () => {
   const [restaurant, setRestaurant] = useState([]);
@@ -58,7 +59,10 @@ const RestaurantAdmin = () => {
   }
 
   return (
+    <div>
+      <SideNav/>
     <div className="min-h-screen bg-slate-100 p-8">
+      
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
           <h1 className="mb-6 text-center text-3xl font-bold text-slate-800 capitalize">
@@ -88,13 +92,15 @@ const RestaurantAdmin = () => {
             </div>
           </button>
           <button className="group rounded-lg bg-white p-6 shadow-sm transition-all hover:shadow-md">
-            <div className="flex flex-col items-center text-slate-700 gap-4">
+            <div className="flex flex-col items-center text-slate-700 gap-4"
+            onClick={()=>router.push(`/foodItems/${restaurant?.id}`)}>
               <LiaUtensilsSolid className="h-12 w-12 text-slate-700 transition-colors group-hover:text-blue-600" />
               <h3 className="text-xl font-semibold group-hover:text-blue-600">Manage Menu</h3>
             </div>
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 };

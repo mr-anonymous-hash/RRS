@@ -3,6 +3,7 @@ import './../../app/globals.css'
 import axios from 'axios';
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdBackHand, MdLocationPin, MdOutlineAddBox, MdOutlineArrowBack, MdOutlineDeleteOutline } from "react-icons/md";
+import { FaUsersLine } from "react-icons/fa6";
 import { useRouter } from 'next/router';
 
 const FoodItems = () => {
@@ -169,6 +170,7 @@ const FoodItems = () => {
                 <td className="py-2 px-4 text-gray-600">{item.cuisines}</td>
                 <td className="py-2 px-4 text-gray-600">₹{item.price.toFixed(2)}</td>
                 <td className="py-2 px-4 text-gray-600">
+                  <div className='flex gap-2'>
                   <button className='text-blue-500 hover:text-blue-700 mr-2' onClick={() => alert('Edit')}>
                     <AiOutlineEdit />
                   </button>
@@ -176,6 +178,7 @@ const FoodItems = () => {
                   onClick={()=>{deleteFoodItem(item.id)}}>
                     <MdOutlineDeleteOutline/>
                   </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -197,7 +200,7 @@ const FoodItems = () => {
   return (
     <div className="p-8">
       <span className=' rounded-xl'>
-      <MdOutlineArrowBack className='text-black bg-slate-400 rounded-xl text-xl cursor-pointer'
+      <MdOutlineArrowBack className='text-black  rounded-xl text-xl cursor-pointer'
         onClick={()=>router.back()}
       />
       </span>

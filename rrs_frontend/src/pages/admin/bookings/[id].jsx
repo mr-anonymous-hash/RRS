@@ -5,6 +5,7 @@ import './../../../app/globals.css';
 import { GrClose } from "react-icons/gr";
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { MdOutlineAccessTime } from 'react-icons/md';
+import { FaUsersLine } from "react-icons/fa6";
 
 const Bookings = () => {
   const router = useRouter();
@@ -139,7 +140,9 @@ const Bookings = () => {
                       {/* <strong>Hotel Name:</strong> {selectedHotel.hotel_name} */}
                   </p>
               </div>
-
+              <div className='flex gap-1 text-slate-500'>
+                <FaUsersLine className='text-lg '/><p>{selectedReservation.no_of_guests}</p>
+              </div>
               <div className="flex items-center text-gray-500 mb-4">
                   <FaRegCalendarAlt className="mr-2" />
                   <span>{new Date(selectedReservation.reservation_date).
@@ -171,7 +174,7 @@ const Bookings = () => {
 
               <div className='text-slate-500'>
                   {/* <strong>Selected Food:</strong> */}
-                  <table className='min-w-full text-center'>
+                  <table className='min-w-full text-center '>
                       <thead className='bg-blue-500 text-white'>
                           <tr>
                               <th className='p-2 '>Food Item</th>
