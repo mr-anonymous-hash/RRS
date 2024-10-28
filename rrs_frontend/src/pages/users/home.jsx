@@ -4,6 +4,7 @@ import SideNav from '../../components/SideNav'
 import { useRouter } from 'next/router';
 import { MdLocationPin } from 'react-icons/md';
 import { IoSearchOutline } from "react-icons/io5";
+import { FaStar } from "react-icons/fa6";
 
 const Home = () => {
   const [username, setUserName] = useState('')
@@ -12,8 +13,10 @@ const Home = () => {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [booking, setBooking] = useState(0)
+  const [user,setUser] = useState('')
 
   const router = useRouter()
+
   const fetchHotels = async() => {
     try {
       const token = localStorage.getItem('token')
@@ -62,23 +65,12 @@ const Home = () => {
   }
 
   useEffect(()=>{
+    setTimeout(() => {
+      fetchHotels()
+    }, 1000)
     fetchBookings()
+    setUser(JSON.parse(localStorage.getItem('user')))
   },[])
-
-   useEffect(() => {
-    const user = localStorage.getItem('user')
-    try {
-      const userObject = JSON.parse(user)
-      if (user) {
-        setUserName(userObject.name)
-        setTimeout(() => {
-          fetchHotels()
-        }, 1000)
-      }
-    } catch (error) {
-      console.error(`Error user name not found: ${error}`)
-    }
-  }, [])
 
   useEffect(() => {
     if (search) {
@@ -95,6 +87,12 @@ const Home = () => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value)
+  }
+
+  const calculateAverageRating = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0)
+    return (totalRating / reviews.length).toFixed(1)
   }
 
   if(loading){
@@ -147,8 +145,9 @@ const Home = () => {
         { (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-wh p-10 rounded-xl">
             {hotels.map((hotel, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 text-black"
-                onClick={() => router.push(`/users/table/${hotel.id}`)}>
+              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg 
+                  cursor-pointer transition-shadow duration-300 text-black"
+                onClick={() => { user === null ? router.push('/users/login') : router.push(`/users/table/${hotel.id}`)}}>
                 <div className=''>
                 <img 
                   src={`http://localhost:8000/${hotel.image_path}`}
@@ -157,10 +156,16 @@ const Home = () => {
                 />
                 </div>
                 <div className="p-4">
+                <div className='flex justify-between'>
                   <h2 className="text-xl font-semibold mb-2 capitalize">{hotel.hotel_name}</h2>
+                  <span className="text-gray-600 text-sm flex items-center bg-slate-800 text-white px-1 py-0
+                   rounded-md capitalize gap-1">
+                    <FaStar/>{calculateAverageRating(hotel.reviews)}
+                  </span>
+                  </div>
                   <p className="text-gray-600 text-base flex items-center capitalize">
                     <MdLocationPin/>{hotel.location}
-                  </p>
+                  </p>  
                 </div>
               </div>
             ))}
