@@ -1,15 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './../app/globals.css'
 import SideNav from './../components/SideNav'
 import { useRouter } from 'next/router'
 import { MdLocationPin } from 'react-icons/md'
+import apiCall from '../utils/apiCalls'
 
 const Home = () => {
   const router = useRouter();
   const [username, setUserName] = useState('')
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true)
-  
+
+  const fetchHotels = useCallback(async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'))
+      let url = `/hotels/admin/${user.user_id}`
+      
+      const res = await apiCall(url, 'GET')
+      console.log("Raw API response:", res);
+      
+      // With Axios, the data is already parsed and available in res.data
+      if (res.status !== 200) {
+        throw new Error(`Failed to fetch hotels: ${res.status} ${res.statusText}`);
+      }
+      
+      // Use res.data directly instead of res.json()
+      console.log("Hotels data:", res.data);
+      setHotels(res.data);
+      
+    } catch (error) {
+      console.error('Error fetching hotels:', error);
+    }
+}, [])
+
   useEffect(()=>{
     const token = localStorage.getItem('token')
     const user = localStorage.getItem('user')
@@ -23,6 +46,9 @@ const Home = () => {
         if(userObject.role === false){
           router.push('/users/home')
         } 
+        fetchHotels().then(()=>{
+          setLoading(false)
+        })
       }
       catch(error){
         console.error(`Error prasing user data:${error}`)
@@ -32,37 +58,8 @@ const Home = () => {
       }
     }
 
-  },[router])
-
-  const fetchHotels = async () => {
-    const token = localStorage.getItem('token')
-    const user = localStorage.getItem('user')
-    try {
-      const userObject = JSON.parse(user)
-      const user_id = userObject.user_id
-      const res = await fetch(`http://localhost:8000/api/hotels/admin/${user_id}`, 
-        {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization':`Bearer ${token}`
-        }
-      });
+  },[router,fetchHotels])
   
-      if (!res.ok) {
-        throw new Error(`Failed to fetch hotels: ${res.status} ${res.statusText}`);
-      }
-  
-      const data = await res.json(); 
-      setHotels(data)
-    } catch (error) {
-      console.error('Error fetching hotels:', error);
-    }
-  };
-  
-  useEffect(()=>{
-    fetchHotels()
-  },[])
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen">
@@ -72,6 +69,8 @@ const Home = () => {
       </div>
     </div>
   );
+
+  console.log('hotels:', hotels);
 
   return (
     <div>
