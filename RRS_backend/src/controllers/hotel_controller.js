@@ -29,6 +29,10 @@ const getAllHotels = async(req, res) => {
     const hotels = await hotel_crud.getAllHotels()
     res.status(200).send(hotels)
 }
+const getAllHotelsWithReviews = async(req, res) => {
+    const hotels = await hotel_crud.getAllHotelsWithReviews()
+    res.status(200).send(hotels)
+}
 
 const getHotelById = async(req, res) => {
     const id = req.params.id
@@ -158,6 +162,6 @@ const deleteHotel = async(req, res) => {
     }
 }
 module.exports = {
-    getAllHotels,getHotelById,getHotelsByAdminId,
+    getAllHotels,getAllHotelsWithReviews, getHotelById,getHotelsByAdminId,
     createHotel,updateHotel,deleteHotel
 }
