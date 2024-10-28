@@ -8,7 +8,7 @@ const apiCall = async(endPoint, methods, data, formData) => {
     if(formData===true){
         headers['Content-Type'] = 'multipart/form-data'
     }
-    const accessToken = localStorage.getItem('access_token')
+    const accessToken = localStorage.getItem('token')
 
     headers['Authorization'] = `Bearer ${accessToken}`
     console.log(headers)
