@@ -13,18 +13,22 @@ const SideNav = ({Badge}) => {
   const router = useRouter();
   const [role, setRole] = useState('')
   const [userId, setUserId] = useState('') 
+  const [user, setUser] = useState('')
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     router.push('/login')
   }
 
   useEffect(()=>{
-    const user = JSON.parse(localStorage.getItem('user'))
+    if(localStorage.getItem('user')){
+      setUser(JSON.parse(localStorage.getItem('user')))
+    }
     const userRole = user.role
     const userId  = user.user_id
     setRole(userRole)
     setUserId(userId) 
-  })
+  },[user])
  
   return (
     <div className='w-full-screem h-auto bg-slate-800 text-white p-4 sticky top-0'>
@@ -81,13 +85,21 @@ const SideNav = ({Badge}) => {
         </a>
         )
       }
-      <a 
-        onClick={logout} 
-        className='cursor-pointer hover:text-red-500 p-2 rounded transition duration-200 flex items-center gap-1'
-      >
-        {/* <MdLogout className='text-xl'/> */}
-         <p>Logout</p>
-      </a>
+      {
+        user ? (<a 
+          onClick={logout} 
+          className='cursor-pointer hover:text-red-500 p-2 rounded transition duration-200 flex items-center gap-1'
+        >
+           <p>Logout</p>
+        </a>) : (
+          <a 
+          onClick={()=>router.push('/login')} 
+          className='cursor-pointer hover:text-red-500 p-2 rounded transition duration-200 flex items-center gap-1'
+        >
+           <p>Login</p>
+        </a>
+        )
+      }
     </div>
     </div>
   </div>
