@@ -1,0 +1,18 @@
+# Use a Node base image
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy backend files and install dependencies
+COPY RRS_backend/package*.json ./
+RUN npm install --production
+
+# Copy the backend code
+COPY RRS_backend/ .
+
+# Expose the backend port
+EXPOSE 8000
+
+# Command to start the backend server directly
+CMD ["node", "index.js"]
