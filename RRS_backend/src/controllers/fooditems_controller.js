@@ -1,8 +1,27 @@
 const fooditems_crud = require('./../crud/fooditems_crud')
+const redis = require('./../redis')
 
 const getAllFoodItems = async(req, res) => {
-    const foodItems = await fooditems_crud.getAllFoodItems()
-    res.status(200).send(foodItems)
+
+    try{
+    const cacheKey = 'all_food_items'
+    const cacheFoodItems = await redis.get(cacheKey)
+    if(cacheFoodItems){
+        console.log('serving from redis cache')
+        return res.status(200).send(JSON.parse(cacheFoodItems))
+    }else{
+        const foodItems = await fooditems_crud.getAllFoodItems()
+
+        if(foodItems){
+            await redis.setex(cacheKey,3200,JSON.stringify(foodItems))
+            res.status(200).send(foodItems)
+            console.log('serving from database and caching in redis')
+        }
+    }
+        }catch(error){
+            console.error(`Error fetching food items: ${error}`);
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
 }
 
 const getFoodItemsById = async(req, res) =>{
@@ -18,14 +37,29 @@ const getFoodItemsById = async(req, res) =>{
 
 const getFoodItemsByHotelId = async(req, res) =>{
     const {id} = req.params
-    console.log(id)
-    const foodItem = await fooditems_crud.getFoodItemsByHotelId(id)
-    if(foodItem){
-        res.status(200).send(foodItem)
+
+  try{
+    const cacheKey = `foodItemsByhotel_${id}`
+    const cacheFoodItems = await redis.get(cacheKey) 
+    if(cacheFoodItems){
+        console.log('serving from redis cache')
+        return res.status(200).send(JSON.parse(cacheFoodItems))
     }
     else{
-        res.status(404).send('FoodItem not found')
+        const foodItems = await fooditems_crud.getFoodItemsByHotelId(id)
+        if(foodItems){
+            await redis.setex(cacheKey, 3600, JSON.stringify(foodItems))
+            console.log('serving from database and caching in redis')
+            res.status(200).send(foodItems)
+        }
+        else{
+            res.status(404).send('FoodItems not found')
+        }
     }
+  }catch(error){
+    console.error(`Error fetching food items: ${error}`);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
 }
 
 const createFoodItem =  async(req, res) =>{

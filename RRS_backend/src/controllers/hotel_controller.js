@@ -1,4 +1,5 @@
 const hotel_crud = require('./../crud/hotel_crud')
+const redis  =require('./../redis')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
@@ -25,34 +26,91 @@ const upload = multer({
     }
 })
 
-const getAllHotels = async(req, res) => {
-    const hotels = await hotel_crud.getAllHotels()
-    res.status(200).send(hotels)
-}
+const getAllHotels = async (req, res) => {
+    try {
+        // Check Redis cache first
+        const cacheKey = 'all_hotels';
+        const cachedHotels = await redis.get(cacheKey);
+        
+        if (cachedHotels) {
+            // If data exists in cache, return it
+            console.log('Serving from Redis cache');
+            return res.status(200).send(JSON.parse(cachedHotels));
+        } else {
+            // If not, fetch from database
+            const hotels = await hotel_crud.getAllHotels();
+            
+            // Cache the data in Redis with a 1-hour expiration time
+            await redis.setex(cacheKey, 3600, JSON.stringify(hotels));
+            console.log('Serving from Database and caching in Redis');
+            return res.status(200).send(hotels);
+        }
+    } catch (err) {
+        console.error('Error fetching hotels:', err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 const getAllHotelsWithReviews = async(req, res) => {
     const hotels = await hotel_crud.getAllHotelsWithReviews()
     res.status(200).send(hotels)
 }
 
-const getHotelById = async(req, res) => {
-    const id = req.params.id
-    const hotels = await hotel_crud.getHotelById(id)
-    if(hotels){
-        res.status(200).send(hotels)
+const getHotelById = async (req, res) => {
+    const id = req.params.id;
+    try {
+        // Cache key is unique per hotel by ID
+        const cacheKey = `hotel_${id}`;
+        const cachedHotel = await redis.get(cacheKey);
+        
+        if (cachedHotel) {
+            // If data exists in cache, return it
+            console.log('Serving from Redis cache');
+            return res.status(200).send(JSON.parse(cachedHotel));
+        } else {
+            // If not, fetch from database
+            const hotel = await hotel_crud.getHotelById(id);
+            
+            if (hotel) {
+                // Cache the data in Redis with a 1-hour expiration time
+                await redis.setex(cacheKey, 3600, JSON.stringify(hotel));
+                console.log('Serving from Database and caching in Redis');
+                return res.status(200).send(hotel);
+            } else {
+                res.status(404).send('Hotel not Found');
+            }
+        }
+    } catch (err) {
+        console.error('Error fetching hotel:', err);
+        res.status(500).send('Internal Server Error');
     }
-    else{
-        res.status(404).send('Hotel not Found')
-    }
-}
+};
+
 
 const getHotelsByAdminId = async(req, res) => {
     const id = req.params.id
-    const hotels = await hotel_crud.getHotelsByAdminId(id)
-    if(hotels){
-        res.status(200).send(hotels)
+    try{
+        const cacheKey = `admin_${id}`
+        const cachedHotels = await redis.get(cacheKey) 
+
+    if(cachedHotels){
+        console.log(`Serving from redis cache`)
+        return res.status(200).send(JSON.parse(cachedHotels))
+    }else{
+        const hotels = await hotel_crud.getHotelsByAdminId(id)
+
+        if(hotels){
+            await redis.setex(cacheKey,3600,JSON.stringify(hotels))
+            console.log('Serving from Database and caching in Redis');
+            res.status(200).send(hotels)
+        }
+        else{   
+            res.status(404).send('Hotel not Found')
+        }
     }
-    else{
-        res.status(404).send('Hotel not Found')
+    }catch(error){
+        console.error(`Error fetching hotel: ${err}`);
+        res.status(500).json({ error: 'Internal server error', details: err.message });
     }
 }
 
