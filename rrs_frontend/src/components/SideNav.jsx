@@ -1,11 +1,7 @@
 import { Router, useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import jwt_decode from 'jwt-decode'
 import './../app/globals.css'
-import { TiHomeOutline } from "react-icons/ti";
-import { IoSettingsOutline } from "react-icons/io5";
-import { FaRegUserCircle } from "react-icons/fa";
-import { MdLogout, MdOutlineEventAvailable } from "react-icons/md";
-import { BiDish } from "react-icons/bi";
 import { IoRestaurantOutline } from "react-icons/io5";
 
 const SideNav = ({ Badge }) => {
@@ -14,10 +10,34 @@ const SideNav = ({ Badge }) => {
   const [role, setRole] = useState('')
   const [userId, setUserId] = useState('')
   const [user, setUser] = useState('')
+
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     router.push('/login')
+  }
+
+  const isTokenExpried = (token) => {
+    if (!token) return true;
+
+    try {
+      const { exp } = jwt_decode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+      return exp < currentTime;
+    } catch (error) {
+      console.error("Invalid token", error);
+      return true;
+    }
+  }
+
+  const checkAndRedirect = () => {
+    const token = localStorage.getItem('token')
+
+    if (isTokenExpried(token)) {
+      alert('session expired need to login ')
+      localStorage.removeItem('token')
+      router.push('/login')
+    }
   }
 
   useEffect(() => {
@@ -28,6 +48,7 @@ const SideNav = ({ Badge }) => {
       setRole(parsedUser.role)
       setUserId(parsedUser.user_id)
     }
+    checkAndRedirect()
   }, [])
 
   return (
